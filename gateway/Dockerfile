@@ -6,7 +6,7 @@ ENV PYTHONUNBUFFERED=1
 ARG MY_ENV_VAR
 ENV MY_ENV_VAR=${MY_ENV_VAR}
 
-WORKDIR /app
+WORKDIR /app 
 
 COPY requirements.txt .
 
