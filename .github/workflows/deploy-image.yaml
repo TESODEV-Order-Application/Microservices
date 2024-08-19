@@ -1,4 +1,4 @@
-name: Build and Publish Services
+name: Create and publish package
 
 on:
   push:
@@ -8,6 +8,11 @@ on:
       - 'customer_service/**'
       - 'order_service/**'
       - 'gateway/**'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  MY_ENV_VAR: "production"  # Define your environment variable here
 
 jobs:
   build-and-push-customer-service:
