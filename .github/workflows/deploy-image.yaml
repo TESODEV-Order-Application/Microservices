@@ -44,5 +44,5 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args:  # Pass environment variables as build arguments
-            MY_ENV_VAR: ${{ env.MY_ENV_VAR }}
+          build-args: |
+            MY_ENV_VAR=${{ env.MY_ENV_VAR }}
