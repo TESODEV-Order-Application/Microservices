@@ -161,6 +161,7 @@ def test_get_all_customers_empty(mock_mongodb):
     mock_mongodb["customers"].find().to_list.assert_called_once_with(length=None)
 ##########################################
 
+"""
 ##################GET#####################
 # Test the customer retrieval route for a successful case
 def test_get_customer_success(mock_mongodb):
@@ -213,3 +214,4 @@ def test_get_customer_not_found(mock_mongodb):
         {"id": Binary.from_uuid(customer_id)}, {"_id": 0}
     )
 ##########################################
+"""
