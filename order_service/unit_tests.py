@@ -10,7 +10,7 @@ client = TestClient(app)
 
 @pytest.fixture
 def mock_mongodb():
-    with patch("your_module.mongodb.collections") as mock_db:
+    with patch("app.routes.mongodb.collections") as mock_db:
         mock_db["customers"].find_one = AsyncMock()
         mock_db["orders"].insert_one = AsyncMock()
         mock_db["orders"].update_one = AsyncMock()
@@ -18,7 +18,7 @@ def mock_mongodb():
         mock_db["orders"].find = AsyncMock()
         yield mock_db
 
-@patch("your_module.publishMessage")
+@patch("app.routes.RabbitMQ.publishMessage")
 def test_create_order(mock_publish_message, mock_mongodb):
     customer_id = uuid4()
     product_id = uuid4()
