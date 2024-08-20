@@ -2,7 +2,8 @@ import motor.motor_asyncio
 import os
 
 
-conn_str = os.getenv('conn_str')
+#conn_str = os.getenv('conn_str')
+conn_str = "mongodb://MainAdmin:X6CN74SjdffTz9Pz@193.164.4.17:27017/"
 
 class MongoDB:
     def __init__(self, conn_str, list):
