@@ -146,10 +146,16 @@ def test_get_all_customers(mock_mongodb):
     # Check that the returned customer list matches the mock data
     response_data = response.json()
     assert len(response_data) == 2
-    assert len(response_data[0]) == len(mock1)
-    assert len(response_data[1]) == len(mock2)
-    print(response_data)
     
+    # Verify that the specific fields match the mock data
+    assert response_data[0]["name"] == mock1["name"]
+    assert response_data[0]["email"] == mock1["email"]
+    assert response_data[0]["address"]["city"] == mock1["address"]["city"]
+    
+    assert response_data[1]["name"] == mock2["name"]
+    assert response_data[1]["email"] == mock2["email"]
+    assert response_data[1]["address"]["city"] == mock2["address"]["city"]
+
     # Ensure find and to_list methods were called correctly
     mock_mongodb["customers"].find.assert_called_once_with({}, {"_id": 0})
     mock_find.to_list.assert_called_once_with(length=None)
