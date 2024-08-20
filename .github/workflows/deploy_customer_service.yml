@@ -1,4 +1,4 @@
-name: Create and publish package
+name: Create and publish Customer Service
 
 on:
   workflow_run:

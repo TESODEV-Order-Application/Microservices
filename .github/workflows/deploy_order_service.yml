@@ -1,11 +1,10 @@
-name: Create and publish package
+name: Create and publish Order Service
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'order_service/**'
+  workflow_run:
+    workflows: ["Run Unit Tests on Order Service"]
+    types:
+      - completed
 
 env:
   REPOSITORY: order-service
@@ -17,7 +16,7 @@ env:
 
 jobs:
   build-and-push-image:
-    if: ${{ contains(github.event.head_commit.message, '${{ env.RPATH }}') || github.event_name == 'push' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
