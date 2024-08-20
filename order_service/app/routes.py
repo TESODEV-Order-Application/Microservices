@@ -6,6 +6,7 @@ from datetime import datetime
 
 from app.MongoDB import mongodb
 from .models import Order, UpdateOrder
+from .RabbitMQ import publishMessage
 
 router = APIRouter(prefix="/order", tags=["Order"])
 
@@ -30,7 +31,8 @@ async def create(order: UpdateOrder):
     order.customerId = Binary.from_uuid(order.customerId)
     order.product.id = Binary.from_uuid(order.product.id)
     
-    await mongodb.collections["orders"].insert_one(order.dict())
+    await mongodb.collections["orders"].insert_one(order.dict()) #MongoDB
+    publishMessage(order.dict()) # RabbitMQ
     return order.id
 
 ########################################################
@@ -55,19 +57,15 @@ async def getAll():
     return await mongodb.collections["orders"].find({}, {"_id": 0}).to_list(length=None)
 
 
-############################################
-"""
-@router.get("/{customerId}", response_model=List[Order])
-async def get(customerId: UUID):
-    if customerId in orders_db: #######
-        return orders_db[customerId]
-    raise HTTPException(status_code=404, detail="Order not found")
-"""
-############################################
+@router.get("/getByCustomer/{customerId}", response_model=List[Order])
+async def getByCustomer(customerId: UUID):
+    customerId = Binary.from_uuid(customerId)
+
+    return await mongodb.collections["orders"].find({"customerId": customerId}, {"_id": 0}).to_list(length=None)
 
 
-@router.get("/{orderId}", response_model=Order)
-async def get(orderId: UUID):
+@router.get("/getByOrder/{orderId}", response_model=Order)
+async def getByOrder(orderId: UUID):
     orderId = Binary.from_uuid(orderId)
 
     response = await mongodb.collections["orders"].find_one({"id": orderId}, {"_id": 0})

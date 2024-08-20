@@ -1,0 +1,65 @@
+name: Create and publish package
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'rabbitmq_consumer/**'
+
+env:
+  REPOSITORY: rabbitmq-consumer
+  RPATH: rabbitmq_consumer
+  
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  WEBHOOK_URL: http:/193.164.4.17:5000/webhook
+  conn_str: "mongodb://AuditAdmin:DFjMNrpSpa3pnB98@193.164.4.17:27018/"
+
+
+jobs:
+  build-and-push-image:
+    if: ${{ contains(github.event.head_commit.message, '${{ env.RPATH }}') || github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ env.REPOSITORY }}
+          tags: |
+            type=ref,event=branch
+            type=sha
+
+      - name: Build and push Docker image for ${{ env.REPOSITORY }}
+        uses: docker/build-push-action@v4
+        with:
+          context: ./${{ env.RPATH }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            conn_str=${{ env.conn_str }}
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Send payload
+        run: |
+          JSON_DATA='{"repository": "${{ env.REPOSITORY }}"}'
+          ENDPOINT_URL="${{ env.WEBHOOK_URL }}"
+          curl -X POST -H "Content-Type: application/json" -d "$JSON_DATA" "$ENDPOINT_URL"
