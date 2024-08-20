@@ -16,3 +16,8 @@ class Customer(BaseModel):
     address: Address
     createdAt: datetime
     updatedAt: datetime
+
+class UpdateCustomer(BaseModel):
+    name: str
+    email: EmailStr
+    address: Address
