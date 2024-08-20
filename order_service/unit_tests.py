@@ -77,6 +77,9 @@ def test_create_order(mock_publish_message, mock_mongodb):
     assert "updatedAt" in inserted_order
 """
 
+"""
+##################UPDATE##################
+# Test the order update route with a successful update
 def test_update_order_success(mock_mongodb):
     order_id = uuid4()
 
@@ -106,6 +109,7 @@ def test_update_order_success(mock_mongodb):
         {"$set": order_payload | {"updatedAt": datetime.utcnow()}}
     )
 
+# Test the order update route with no orders found to update
 def test_update_order_not_found(mock_mongodb):
     order_id = uuid4()
 
@@ -134,7 +138,11 @@ def test_update_order_not_found(mock_mongodb):
         {"id": Binary.from_uuid(order_id)},
         {"$set": order_payload | {"updatedAt": datetime.utcnow()}}
     )
+##########################################
+"""
 
+##################DELETE##################
+# Test the order delete route with a successful deletion
 def test_delete_order_success(mock_mongodb):
     order_id = uuid4()
 
@@ -151,6 +159,7 @@ def test_delete_order_success(mock_mongodb):
         {"id": Binary.from_uuid(order_id)}
     )
 
+# Test the order delete route with no orders found to delete
 def test_delete_order_not_found(mock_mongodb):
     order_id = uuid4()
 
@@ -166,7 +175,9 @@ def test_delete_order_not_found(mock_mongodb):
     mock_mongodb["orders"].delete_one.assert_called_once_with(
         {"id": Binary.from_uuid(order_id)}
     )
+##########################################
 
+##################GETALL##################
 def test_get_all_orders(mock_mongodb):
     # Mock the find operation to return a list of orders
     mock_mongodb["orders"].find.return_value.to_list = AsyncMock(return_value=[
@@ -211,3 +222,4 @@ def test_get_all_orders(mock_mongodb):
     # Ensure find was called correctly
     mock_mongodb["orders"].find.assert_called_once_with({})
     mock_mongodb["orders"].find.return_value.to_list.assert_called_once_with(length=None)
+##########################################
