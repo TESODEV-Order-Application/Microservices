@@ -1,6 +1,5 @@
 import pika
 import json
-import base64
 from bson import Binary
 from datetime import datetime
 import uuid
@@ -9,12 +8,11 @@ import uuid
 def encodeSpecialFields(orderData):
     for key, value in orderData.items():
         if isinstance(value, Binary):
-            # Convert Binary to UUID string
             orderData[key] = str(uuid.UUID(bytes=value))
         elif isinstance(value, datetime):
-            orderData[key] = value.isoformat()  # Convert datetime to ISO 8601 string
+            orderData[key] = value.isoformat()
         elif isinstance(value, dict):
-            encodeSpecialFields(value)  # Recursively process nested dictionaries
+            encodeSpecialFields(value)
     return orderData
 
 def publishMessage(orderData: dict): 
