@@ -22,7 +22,7 @@ def mock_mongodb():
 def test_create_customer(mock_mongodb):
     response = client.post("/customer/", json={
         "name": "John Doe",
-        "email": "johndoe@example.com",
+        #"email": "johndoe@example.com",
         "address": {
             "addressLine": "123 Main St",
             "city": "Metropolis",
