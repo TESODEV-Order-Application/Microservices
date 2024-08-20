@@ -55,6 +55,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             MY_ENV_VAR=${{ env.MY_ENV_VAR }}
+            conn_str=${{ env.conn_str }}
 
       - name: Checkout code
         uses: actions/checkout@v2

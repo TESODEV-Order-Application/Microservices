@@ -4,7 +4,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 ARG conn_str
-ENV conn_str=mongodb://MainAdmin:X6CN74SjdffTz9Pz@193.164.4.17:27017/
+ENV conn_str=${conn_str}
 
 WORKDIR /app
 
