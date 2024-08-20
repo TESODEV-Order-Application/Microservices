@@ -5,7 +5,7 @@ from app.routes import router
 
 from unittest.mock import patch, AsyncMock
 from bson import Binary
-from uuid import uuid4
+from uuid import uuid4, UUID
 
 # Create a TestClient for the app
 client = TestClient(app) 
@@ -32,7 +32,16 @@ def test_create_customer(mock_mongodb):
     })
 
     assert response.status_code == 200
-    assert "uuid" in response.json()
+    
+    # Validate that the response is a UUID string
+    response_uuid = response.json()
+    try:
+        UUID(response_uuid, version=4)  # Ensure it's a valid UUIDv4 string
+        is_valid_uuid = True
+    except ValueError:
+        is_valid_uuid = False
+    
+    assert is_valid_uuid, "The response is not a valid UUID"
 
     # Check that the insert_one was called on the MongoDB collection
     assert mock_mongodb["customers"].insert_one.called
