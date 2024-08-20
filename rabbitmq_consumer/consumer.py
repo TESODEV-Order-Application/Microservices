@@ -9,8 +9,7 @@ username = os.getenv('rabbit_username')
 password = os.getenv('rabbit_password')
 ip = os.getenv('ip')
 
-async def save_to_mongodb(order_data):
-    print(order_data)
+async def save_to_mongodb(order_data): 
     await mongodb.collections['AuditLog'].insert_one(order_data)
 
 def callback(ch, method, properties, body):
