@@ -3,7 +3,11 @@ import json
 from bson import Binary
 from datetime import datetime
 import uuid
+import os
 
+username = os.getenv('rabbit_username')
+password = os.getenv('rabbit_password')
+ip = os.getenv('ip')
 
 def encodeSpecialFields(orderData):
     for key, value in orderData.items():
@@ -20,10 +24,10 @@ def publishMessage(orderData: dict):
     
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(
-            host='193.164.4.17',
+            host=ip,
             port=5672,
             virtual_host='/',
-            credentials=pika.PlainCredentials('guest', 'Xdm@LtkdEoa5FHkM')
+            credentials=pika.PlainCredentials(username, password)
         )
     )
     channel = connection.channel()
