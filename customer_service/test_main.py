@@ -8,7 +8,7 @@ from bson import Binary
 from uuid import uuid4, UUID
 
 # Create a TestClient for the app
-client = TestClient(app) 
+client = TestClient(app)
 
 # Mock MongoDB collection
 @pytest.fixture
