@@ -52,7 +52,7 @@ async def getAll():
 async def get(customerId: UUID):
     customerId = Binary.from_uuid(customerId)
 
-    response = await mongodb.collections["customers"].find_one({"id": customerId}, {"_id": 0})
+    response = await mongodb.collections["customers"].find_one({"id": customerId}, {"_id": 0, "id": 0}) ###
     if response is None:
         raise HTTPException(status_code=404, detail="Customer not found")
     return response
