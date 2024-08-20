@@ -148,7 +148,8 @@ def test_get_all_customers(mock_mongodb):
     assert len(response_data) == 2
     assert len(response_data[0]) == len(mock1)
     assert len(response_data[1]) == len(mock2)
-
+    print(response_data)
+    
     # Ensure find and to_list methods were called correctly
     mock_mongodb["customers"].find.assert_called_once_with({}, {"_id": 0})
     mock_find.to_list.assert_called_once_with(length=None)
