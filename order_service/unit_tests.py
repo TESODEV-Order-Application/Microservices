@@ -17,7 +17,7 @@ def mock_mongodb():
         mock_db["orders"].delete_one = AsyncMock()
         mock_db["orders"].find = AsyncMock()
         yield mock_db
-"""
+
 @patch("app.routes.RabbitMQ.publishMessage")
 def test_create_order(mock_publish_message, mock_mongodb):
     customer_id = uuid4()
@@ -75,7 +75,7 @@ def test_create_order(mock_publish_message, mock_mongodb):
     assert inserted_order["product"]["id"] == Binary.from_uuid(product_id)
     assert "createdAt" in inserted_order
     assert "updatedAt" in inserted_order
-"""
+
 
 """
 ##################UPDATE##################
