@@ -150,3 +150,4 @@ def test_validate_customer(mock_mongodb):
 
     # Check that the find_one was called on the MongoDB collection
     assert mock_mongodb["customers"].find_one.called
+ 
