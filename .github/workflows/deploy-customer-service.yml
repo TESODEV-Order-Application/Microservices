@@ -12,12 +12,12 @@ env:
   IMAGE_NAME: ${{ github.repository }}
   WEBHOOK_URL: http:/193.164.4.17:5000/webhook
   REPOSITORY: customer-service
-  PATH1: customer_service3
+  RPATH: customer_service
   MY_ENV_VAR: "production"
 
 jobs:
   build-and-push-image:
-    if: ${{ contains(github.event.head_commit.message, '${{ env.PATH1 }}') || github.event_name == 'push' }}
+    if: ${{ contains(github.event.head_commit.message, '${{ env.RPATH }}') || github.event_name == 'push' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -46,7 +46,7 @@ jobs:
       - name: Build and push Docker image for ${{ env.REPOSITORY }}
         uses: docker/build-push-action@v4
         with:
-          context: ./customer_service
+          context: ./${{ env.RPATH }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
