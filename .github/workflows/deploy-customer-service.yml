@@ -12,7 +12,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}
   WEBHOOK_URL: http:/193.164.4.17:5000/webhook
   REPOSITORY: customer-service
-  PATH: customer_service
+  PATH: customer_service3
   MY_ENV_VAR: "production"
 
 jobs:
