@@ -14,7 +14,6 @@ client = TestClient(app)
 @pytest.fixture
 def mock_mongodb():
     with patch("app.routes.mongodb.collections") as mock_db:
-        # Ensure the insert_one method is an AsyncMock
         mock_db["customers"].insert_one = AsyncMock()
         yield mock_db
 
@@ -22,7 +21,7 @@ def mock_mongodb():
 def test_create_customer(mock_mongodb):
     response = client.post("/customer/", json={
         "name": "John Doe",
-        #"email": "johndoe@example.com",
+        "email": "johndoe@example.com",
         "address": {
             "addressLine": "123 Main St",
             "city": "Metropolis",
@@ -36,12 +35,10 @@ def test_create_customer(mock_mongodb):
     # Validate that the response is a UUID string
     response_uuid = response.json()
     try:
-        UUID(response_uuid, version=4)  # Ensure it's a valid UUIDv4 string
+        UUID(response_uuid, version=4)
         is_valid_uuid = True
     except ValueError:
         is_valid_uuid = False
     
     assert is_valid_uuid, "The response is not a valid UUID"
-
-    # Check that the insert_one was called on the MongoDB collection
     assert mock_mongodb["customers"].insert_one.called
