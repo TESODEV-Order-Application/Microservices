@@ -13,6 +13,9 @@ def mock_mongodb():
     with patch("app.routes.mongodb.collections") as mock_db:
         mock_db["customers"].find_one = AsyncMock()
         mock_db["orders"].find_one = AsyncMock()
+        mock_db["orders"].insert_one = AsyncMock()
+        mock_db["orders"].update_one = AsyncMock()
+        mock_db["orders"].delete_one = AsyncMock()
         yield mock_db
 
 
