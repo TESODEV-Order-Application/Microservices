@@ -4,6 +4,7 @@ from main import app
 from app.routes import router
 from typing import List
 from fastapi import HTTPException
+from datetime import datetime
 
 from unittest.mock import patch, AsyncMock
 from bson import Binary
@@ -113,7 +114,9 @@ def test_get_all_customers(mock_mongodb):
                 "city": "Metropolis",
                 "country": "Wonderland",
                 "cityCode": 12345
-            }
+            },
+            "createdAt": datetime.utcnow().isoformat(),
+            "updatedAt": datetime.utcnow().isoformat()
         },
         {
             "id": str(uuid4()),
@@ -124,7 +127,9 @@ def test_get_all_customers(mock_mongodb):
                 "city": "Gotham",
                 "country": "Wonderland",
                 "cityCode": 67890
-            }
+            },
+            "createdAt": datetime.utcnow().isoformat(),
+            "updatedAt": datetime.utcnow().isoformat()
         }
     ])
 
@@ -146,7 +151,7 @@ def test_get_all_customers(mock_mongodb):
 # Test the getAll customers route for a case where no customers are found
 def test_get_all_customers_empty(mock_mongodb):
     # Mock the return value of the find operation to return an empty list
-    mock_mongodb["customers"].find().to_list = AsyncMock(return_value=[])
+    mock_mongodb["customers"].find.return_value.to_list = AsyncMock(return_value=[])
 
     response = client.get("/customer/")
 
