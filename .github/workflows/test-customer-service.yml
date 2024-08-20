@@ -33,5 +33,4 @@ jobs:
       env:
         PYTHONPATH: ./customer_service
       run: |
-        cd customer_service
-        pytest tests/unitTests.py -s  --disable-warnings
+        pytest customer_service/tests/unitTests.py -s --disable-warnings
