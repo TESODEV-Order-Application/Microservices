@@ -18,7 +18,7 @@ env:
 
 jobs:
   build-and-push-image:
-    if: ${{ contains(github.event.head_commit.message, '${{ env.RPATH }}') || github.event_name == 'push' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
