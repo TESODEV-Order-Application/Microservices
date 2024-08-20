@@ -16,7 +16,7 @@ client = TestClient(app)
 def mock_mongodb():
     with patch("app.routes.mongodb.collections") as mock_db:
         mock_db["customers"].insert_one = AsyncMock()
-        mock_db["customers"].insert_one = AsyncMock()
+        mock_db["customers"].find_one = AsyncMock()
         mock_db["customers"].update_one = AsyncMock()
         mock_db["customers"].delete_one = AsyncMock()
         mock_db["customers"].find = AsyncMock()
