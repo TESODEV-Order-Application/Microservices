@@ -45,14 +45,14 @@ async def delete(customerId: UUID): #OTHER RELATİON LOGİC
 
 @router.get("/", response_model=List[Customer])
 async def getAll():
-    return await mongodb.collections["customers"].find({}, {"_id": 0}).to_list(length=None)
+    return await mongodb.collections["customers"].find({}, {"_id": 0, "name": 0}).to_list(length=None)
 
 
 @router.get("/{customerId}", response_model=Customer)
 async def get(customerId: UUID):
     customerId = Binary.from_uuid(customerId)
 
-    response = await mongodb.collections["customers"].find_one({"id": customerId}, {"_id": 0, "name": 0})
+    response = await mongodb.collections["customers"].find_one({"id": customerId}, {"_id": 0})
     if response is None:
         raise HTTPException(status_code=404, detail="Customer not found")
     return response
