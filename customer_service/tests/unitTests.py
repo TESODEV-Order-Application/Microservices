@@ -12,7 +12,7 @@ from customer_service.main import app
 client = TestClient(app)
 
 # Mock MongoDB collection
-@pytest.fixture
+@pytest.fixture 
 def mock_mongodb():
     with patch("app.routes.mongodb.collections") as mock_db:
         mock_db["customers"].insert_one = AsyncMock()
