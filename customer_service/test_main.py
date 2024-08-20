@@ -194,7 +194,9 @@ def test_get_customer_success(mock_mongodb):
             "city": "Metropolis",
             "country": "Wonderland",
             "cityCode": 12345
-        }
+        },
+        "createdAt": datetime.utcnow().isoformat(),
+        "updatedAt": datetime.utcnow().isoformat()
     })
 
     response = client.get(f"/customer/{customer_id}")
@@ -208,6 +210,8 @@ def test_get_customer_success(mock_mongodb):
     assert response_data["email"] == "johndoe@example.com"
     assert response_data["address"]["addressLine"] == "123 Main St"
     assert response_data["address"]["city"] == "Metropolis"
+    assert "createdAt" in response_data
+    assert "updatedAt" in response_data
 
     # Ensure find_one was called with the correct parameters
     mock_mongodb["customers"].find_one.assert_called_once_with(
