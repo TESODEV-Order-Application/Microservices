@@ -10,11 +10,14 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  WEBHOOK_URL: http:/193.164.4.17:5000/webhook
+  REPOSITORY: customer-service
+  PATH: customer_service
   MY_ENV_VAR: "production"
 
 jobs:
-  build-and-push-customer-service:
-    if: ${{ contains(github.event.head_commit.message, 'customer_service') || github.event_name == 'push' }}
+  build-and-push-image:
+    if: ${{ contains(github.event.head_commit.message, '${{ env.PATH }}') || github.event_name == 'push' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -35,17 +38,30 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-customer-service
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ env.REPOSITORY }}
           tags: |
             type=ref,event=branch
             type=sha
 
-      - name: Build and push Docker image for customer-service
+      - name: Build and push Docker image for ${{ env.REPOSITORY }}
         uses: docker/build-push-action@v4
         with:
-          context: ./customer_service
+          context: ./${{ env.PATH }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             MY_ENV_VAR=${{ env.MY_ENV_VAR }}
+
+  send_payload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Send payload
+        run: |
+          JSON_DATA='{"repository": "${{ env.REPOSITORY }}"}'
+          ENDPOINT_URL="${{ env.WEBHOOK_URL }}"
+          curl -X POST -H "Content-Type: application/json" -d "$JSON_DATA" "$ENDPOINT_URL"
