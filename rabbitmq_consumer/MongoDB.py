@@ -2,7 +2,7 @@ import motor.motor_asyncio
 import os
 
 
-conn_str = os.getenv('conn_str')
+conn_str = os.getenv('conn_str_audit')
 
 class MongoDB:
     def __init__(self, conn_str, list):

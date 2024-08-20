@@ -5,6 +5,7 @@ import asyncio
 from MongoDB import mongodb
 
 async def save_to_mongodb(order_data):
+    print(order_data)
     await mongodb.collections['AuditLog'].insert_one(order_data)
 
 def callback(ch, method, properties, body):

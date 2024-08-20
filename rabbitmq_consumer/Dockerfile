@@ -4,8 +4,8 @@ FROM python:3.10-slim
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-ARG conn_str
-ENV conn_str=${conn_str}
+ARG conn_str_audit
+ENV conn_str_audit=${conn_str_audit}
 
 # Set the working directory in the container
 WORKDIR /app

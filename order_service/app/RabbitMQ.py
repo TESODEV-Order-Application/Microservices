@@ -3,16 +3,18 @@ import json
 import base64
 from bson import Binary
 from datetime import datetime
+import uuid
 
 
 def encodeSpecialFields(orderData):
     for key, value in orderData.items():
         if isinstance(value, Binary):
-            orderData[key] = base64.b64encode(value).decode('utf-8')
+            # Convert Binary to UUID string
+            orderData[key] = str(uuid.UUID(bytes=value))
         elif isinstance(value, datetime):
             orderData[key] = value.isoformat()  # Convert datetime to ISO 8601 string
         elif isinstance(value, dict):
-            encodeSpecialFields(value)
+            encodeSpecialFields(value)  # Recursively process nested dictionaries
     return orderData
 
 def publishMessage(orderData: dict): 
