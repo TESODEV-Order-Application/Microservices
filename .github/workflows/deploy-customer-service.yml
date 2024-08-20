@@ -15,6 +15,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}
   WEBHOOK_URL: http:/193.164.4.17:5000/webhook
   MY_ENV_VAR: "production"
+  conn_str: "mongodb://MainAdmin:X6CN74SjdffTz9Pz@193.164.4.17:27017/"
 
 
 jobs:

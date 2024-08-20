@@ -3,11 +3,20 @@ from uuid import UUID
 from .models import Customer
 from typing import List
 
+from app.MongoDB import mongodb
+
 
 router = APIRouter(prefix="/customer", tags=["Customer"])
 
 # In-memory database substitute for demonstration purposes
 customers_db = {} #############################
+
+
+@router.get("/test")
+async def test():
+    return await mongodb.collections["customers"].find_one({}, {"_id": 0})
+
+
 
 @router.post("/", response_model=UUID)
 async def create(customer: Customer):

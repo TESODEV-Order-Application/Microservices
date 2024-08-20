@@ -3,6 +3,9 @@ FROM python:3.10
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+ARG conn_str
+ENV conn_str=${conn_str}
+
 WORKDIR /app
 
 COPY requirements.txt .
