@@ -248,36 +248,29 @@ def test_validate_customer_exists(mock_mongodb):
         "email": "johndoe@example.com"
     })
 
-    print(f"Testing /validate/{customer_id}")
-
-    response = client.get(f"/validate/{customer_id}")
-    
-    print(f"Response status code: {response.status_code}")
-    print(f"Response content: {response.json()}")
+    response = client.get(f"/customer/validate/{customer_id}")
 
     assert response.status_code == 200
     assert response.json() is True
 
+    # Ensure find_one was called with the correct parameters
     mock_mongodb["customers"].find_one.assert_called_once_with(
         {"id": Binary.from_uuid(customer_id)}, {"_id": 0}
     )
 
+# Test the customer validation route for a case where the customer does not exist
 def test_validate_customer_not_exists(mock_mongodb):
     customer_id = uuid4()
 
     # Mock the return value of the find_one operation to simulate that the customer does not exist
     mock_mongodb["customers"].find_one = AsyncMock(return_value=None)
 
-    print(f"Testing /validate/{customer_id}")
-
-    response = client.get(f"/validate/{customer_id}")
-
-    print(f"Response status code: {response.status_code}")
-    print(f"Response content: {response.json()}")
+    response = client.get(f"/customer/validate/{customer_id}")
 
     assert response.status_code == 200
     assert response.json() is False
 
+    # Ensure find_one was called with the correct parameters
     mock_mongodb["customers"].find_one.assert_called_once_with(
         {"id": Binary.from_uuid(customer_id)}, {"_id": 0}
     )
