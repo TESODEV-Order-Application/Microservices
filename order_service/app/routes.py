@@ -9,10 +9,6 @@ from .models import Order, UpdateOrder
 
 router = APIRouter(prefix="/order", tags=["Order"])
 
-# In-memory database substitute for demonstration purposes
-#orders_db = {}
-
-
 
 @router.post("/", response_model=UUID)
 async def create(order: UpdateOrder):
