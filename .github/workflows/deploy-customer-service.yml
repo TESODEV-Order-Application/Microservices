@@ -12,12 +12,12 @@ env:
   IMAGE_NAME: ${{ github.repository }}
   WEBHOOK_URL: http:/193.164.4.17:5000/webhook
   REPOSITORY: customer-service
-  PATH: customer_service3
+  PATH1: customer_service3
   MY_ENV_VAR: "production"
 
 jobs:
   build-and-push-image:
-    if: ${{ contains(github.event.head_commit.message, '${{ env.PATH }}') || github.event_name == 'push' }}
+    if: ${{ contains(github.event.head_commit.message, '${{ env.PATH1 }}') || github.event_name == 'push' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
