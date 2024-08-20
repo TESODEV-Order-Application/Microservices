@@ -101,10 +101,13 @@ def test_delete_customer(mock_mongodb):
 ##########################################
 
 ##################GETALL##################
+from unittest.mock import MagicMock
+
 # Test the getAll customers route for a successful case with customers present
 def test_get_all_customers(mock_mongodb):
     # Mock the return value of the find operation
-    mock_mongodb["customers"].find().to_list = AsyncMock(return_value=[
+    mock_find = MagicMock()
+    mock_find.to_list = AsyncMock(return_value=[
         {
             "id": str(uuid4()),
             "name": "John Doe",
@@ -132,6 +135,7 @@ def test_get_all_customers(mock_mongodb):
             "updatedAt": datetime.utcnow().isoformat()
         }
     ])
+    mock_mongodb["customers"].find.return_value = mock_find
 
     response = client.get("/customer/")
 
@@ -145,8 +149,7 @@ def test_get_all_customers(mock_mongodb):
 
     # Ensure find and to_list methods were called correctly
     mock_mongodb["customers"].find.assert_called_once_with({}, {"_id": 0})
-    mock_mongodb["customers"].find().to_list.assert_called_once_with(length=None)
-
+    mock_find.to_list.assert_called_once_with(length=None)
 
 # Test the getAll customers route for a case where no customers are found
 def test_get_all_customers_empty(mock_mongodb):
