@@ -7,7 +7,7 @@ from bson import Binary
 from uuid import uuid4, UUID
 
 from main import app
- 
+
 # Create a TestClient for the app
 client = TestClient(app)
 
