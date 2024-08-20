@@ -51,7 +51,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            conn_str_audit=${{ secrets.CONN_STR_AUDIT }}
+            conn_str=${{ secrets.CONN_STR }}
             rabbit_username=${{ secrets.RABBIT_USERNAME }}
             rabbit_password=${{ secrets.RABBIT_PASSWORD }}
             ip=${{ secrets.IP }}
