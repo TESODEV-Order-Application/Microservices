@@ -43,9 +43,9 @@ async def delete(customerId: UUID): #OTHER RELATİON LOGİC
     return (await mongodb.collections["customers"].delete_one({"id": customerId})).deleted_count > 0
 
 
-@router.get("/")#, response_model=List[Customer])
+@router.get("/", response_model=List[Customer])
 async def getAll():
-    return await mongodb.collections["customers"].find({}, {"_id": 0, "name": 0}).to_list(length=None)
+    return await mongodb.collections["customers"].find({}, {"_id": 0}).to_list(length=None)
 
 
 @router.get("/{customerId}", response_model=Customer)
