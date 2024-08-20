@@ -174,7 +174,7 @@ def test_get_all_customers_empty(mock_mongodb):
     assert response_data == []
 
     # Ensure find and to_list methods were called correctly
-    mock_mongodb["customers"].find.assert_called_once_with({}, {"_id": 0})
+    mock_mongodb["customers"].find.assert_called_once_with({}, {"_id": 0, "name": 0})
     mock_mongodb["customers"].find().to_list.assert_called_once_with(length=None)
 ##########################################
 
