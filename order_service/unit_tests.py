@@ -22,7 +22,6 @@ def mock_mongodb(monkeypatch):
 # Test the create order route for a case where the customer exists
 def test_create_order_customer_exists(mock_mongodb):
     customer_id = uuid4()
-    order_id = uuid4()
 
     # Mock the return value of the find_one operation to simulate that the customer exists
     mock_mongodb["customers"].find_one = AsyncMock(return_value={"address": "123 Main St"})
@@ -32,10 +31,14 @@ def test_create_order_customer_exists(mock_mongodb):
 
     response = client.post("/order/", json={
         "customerId": str(customer_id),
-        "product": {"id": str(uuid4()), "name": "Product1"},
         "quantity": 1,
-        "status": "pending",  # Assuming status is required
-        "totalPrice": 100.0   # Assuming totalPrice is required
+        "price": 100.0,
+        "status": "pending",
+        "product": {
+            "id": str(uuid4()),
+            "name": "Product1",
+            "imageUrl": "http://example.com/product1.png"
+        }
     })
 
     assert response.status_code == 200
