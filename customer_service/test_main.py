@@ -106,34 +106,36 @@ from unittest.mock import MagicMock
 # Test the getAll customers route for a successful case with customers present
 def test_get_all_customers(mock_mongodb):
     # Mock the return value of the find operation
+    mock1 = {
+        "id": str(uuid4()),
+        "name": "John Doe",
+        "email": "johndoe@example.com",
+        "address": {
+            "addressLine": "123 Main St",
+            "city": "Metropolis",
+            "country": "Wonderland",
+            "cityCode": 12345
+        },
+        "createdAt": datetime.utcnow().isoformat(),
+        "updatedAt": datetime.utcnow().isoformat()
+    }
+    mock2 = {
+        "id": str(uuid4()),
+        "name": "Jane Doe",
+        "email": "janedoe@example.com",
+        "address": {
+            "addressLine": "456 Elm St",
+            "city": "Gotham",
+            "country": "Wonderland",
+            "cityCode": 67890
+        },
+        "createdAt": datetime.utcnow().isoformat(),
+        "updatedAt": datetime.utcnow().isoformat()
+    }
     mock_find = MagicMock()
     mock_find.to_list = AsyncMock(return_value=[
-        {
-            "id": str(uuid4()),
-            "name": "John Doe",
-            "email": "johndoe@example.com",
-            "address": {
-                "addressLine": "123 Main St",
-                "city": "Metropolis",
-                "country": "Wonderland",
-                "cityCode": 12345
-            },
-            "createdAt": datetime.utcnow().isoformat(),
-            "updatedAt": datetime.utcnow().isoformat()
-        },
-        {
-            "id": str(uuid4()),
-            "name": "Jane Doe",
-            "email": "janedoe@example.com",
-            "address": {
-                "addressLine": "456 Elm St",
-                "city": "Gotham",
-                "country": "Wonderland",
-                "cityCode": 67890
-            },
-            "createdAt": datetime.utcnow().isoformat(),
-            "updatedAt": datetime.utcnow().isoformat()
-        }
+        mock1,
+        mock2
     ])
     mock_mongodb["customers"].find.return_value = mock_find
 
@@ -144,8 +146,8 @@ def test_get_all_customers(mock_mongodb):
     # Check that the returned customer list matches the mock data
     response_data = response.json()
     assert len(response_data) == 2
-    assert response_data[0]["name"] == "John Doe"
-    assert response_data[1]["name"] == "Jane Doe"
+    assert response_data[0] == mock1
+    assert response_data[1] == mock2
 
     # Ensure find and to_list methods were called correctly
     mock_mongodb["customers"].find.assert_called_once_with({}, {"_id": 0})
