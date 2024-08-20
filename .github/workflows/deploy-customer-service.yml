@@ -1,11 +1,10 @@
 name: Create and publish package
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'customer_service/**'
+  workflow_run:
+    workflows: ["Run Unit Tests on Customer Service"]
+    types:
+      - completed
 
 
 
