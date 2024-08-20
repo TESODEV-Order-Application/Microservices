@@ -33,7 +33,9 @@ def test_create_order_customer_exists(mock_mongodb):
     response = client.post("/order/", json={
         "customerId": str(customer_id),
         "product": {"id": str(uuid4()), "name": "Product1"},
-        "quantity": 1
+        "quantity": 1,
+        "status": "pending",  # Assuming status is required
+        "totalPrice": 100.0   # Assuming totalPrice is required
     })
 
     assert response.status_code == 200
