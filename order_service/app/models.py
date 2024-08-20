@@ -24,3 +24,10 @@ class Order(BaseModel):
     product: Product
     createdAt: datetime
     updatedAt: datetime
+
+class UpdateOrder(BaseModel):
+    customerId: UUID
+    quantity: int
+    price: float
+    status: str
+    product: Product

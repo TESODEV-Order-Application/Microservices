@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
-from uuid import UUID, uuid4
 from typing import List
 from bson import Binary
+from uuid import UUID, uuid4
 from datetime import datetime
 
 from app.MongoDB import mongodb
@@ -15,19 +15,19 @@ async def create(customer: UpdateCustomer):
     customer = customer.dict()
     customer = Customer(**customer |
             {
-                "id": Binary.from_uuid(uuid4()),
+                "id": uuid4(),
                 "createdAt": datetime.utcnow(),
                 "updatedAt": datetime.utcnow()
             }
         )
 
-    customer.id = Binary.from_uuid(uuid4()) 
+    customer.id = Binary.from_uuid(customer.id) 
     
     await mongodb.collections["customers"].insert_one(customer.dict())
     return customer.id
 
 
-@router.put("/{customer_id}", response_model=bool)
+@router.put("/{customerId}", response_model=bool)
 async def update(customerId: UUID, customer: UpdateCustomer):
     customerId = Binary.from_uuid(customerId)
 
@@ -37,7 +37,7 @@ async def update(customerId: UUID, customer: UpdateCustomer):
     return (await mongodb.collections["customers"].update_one({"id": customerId}, {"$set": customer}, upsert=False)).matched_count > 0
 
 
-@router.delete("/{customer_id}", response_model=bool)
+@router.delete("/{customerId}", response_model=bool)
 async def delete(customerId: UUID): #OTHER RELATİON LOGİC
     customerId = Binary.from_uuid(customerId)
     return (await mongodb.collections["customers"].delete_one({"id": customerId})).deleted_count > 0
@@ -48,7 +48,7 @@ async def getAll():
     return await mongodb.collections["customers"].find({}, {"_id": 0}).to_list(length=None)
 
 
-@router.get("/{customer_id}", response_model=Customer)
+@router.get("/{customerId}", response_model=Customer)
 async def get(customerId: UUID):
     customerId = Binary.from_uuid(customerId)
 
@@ -58,7 +58,7 @@ async def get(customerId: UUID):
     return response
 
 
-@router.get("/validate/{customer_id}", response_model=bool)
+@router.get("/validate/{customerId}", response_model=bool)
 async def validate(customerId: UUID):
     customerId = Binary.from_uuid(customerId)
 
