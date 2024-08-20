@@ -1,7 +1,6 @@
-
 import pytest
 from fastapi.testclient import TestClient
-from app.main import app  # Assuming your FastAPI instance is in main.py
+from ..main import app  # Assuming your FastAPI instance is in main.py
 from app.routes import router  # Importing the router
 
 from unittest.mock import patch
