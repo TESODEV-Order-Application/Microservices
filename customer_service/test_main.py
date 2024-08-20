@@ -21,7 +21,7 @@ def mock_mongodb():
 
 ##################CREATE##################
 # Test the customer creation route
-def test_create_customer(mock_mongodb):
+def test_create_customer(mock_mongodb): 
     response = client.post("/customer/", json={
         "name": "John Doe",
         "email": "johndoe@example.com",
