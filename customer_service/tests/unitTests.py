@@ -6,7 +6,7 @@ from unittest.mock import patch, AsyncMock
 from bson import Binary
 from uuid import uuid4, UUID
 
-from customer_service.main import app
+from ..main import app
 
 # Create a TestClient for the app
 client = TestClient(app)

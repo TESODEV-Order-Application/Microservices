@@ -25,12 +25,10 @@ jobs:
 
     - name: Install dependencies
       run: |
-        cd customer_service
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -r customer_service/requirements.txt
 
     - name: Run tests
-      env:
-        PYTHONPATH: ./customer_service
       run: |
-        pytest customer_service/tests/unitTests.py -s --disable-warnings
+        cd customer_service
+        pytest tests/unitTests.py -s --disable-warnings
