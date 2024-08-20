@@ -31,4 +31,4 @@ jobs:
     - name: Run tests
       run: |
         cd customer_service
-        pytest tests/unitTests.py -s --disable-warnings
+        pytest unitTests.py -s --disable-warnings
