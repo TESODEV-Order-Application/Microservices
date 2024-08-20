@@ -1,12 +1,5 @@
 name: Create and publish package
 
-on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'customer_service/**'
-
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -14,6 +7,13 @@ env:
   REPOSITORY: customer-service
   RPATH: customer_service
   MY_ENV_VAR: "production"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '${{ env.RPATH }}/**'
 
 jobs:
   build-and-push-image:
