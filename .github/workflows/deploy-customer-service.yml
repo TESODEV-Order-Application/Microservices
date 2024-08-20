@@ -1,19 +1,21 @@
 name: Create and publish package
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
-  WEBHOOK_URL: http:/193.164.4.17:5000/webhook
-  REPOSITORY: customer-service
-  RPATH: customer_service
-  MY_ENV_VAR: "production"
-
 on:
   push:
     branches:
       - main
     paths:
-      - '${{ env.RPATH }}/**'
+      - 'customer_service/**'
+
+env:
+  REPOSITORY: customer-service
+  RPATH: customer_service
+  
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  WEBHOOK_URL: http:/193.164.4.17:5000/webhook
+  MY_ENV_VAR: "production"
+
 
 jobs:
   build-and-push-image:
