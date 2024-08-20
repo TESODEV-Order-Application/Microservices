@@ -13,7 +13,6 @@ env:
   
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  WEBHOOK_URL: http:/193.164.4.17:5000/webhook
 
 
 jobs:
@@ -58,5 +57,5 @@ jobs:
       - name: Send payload
         run: |
           JSON_DATA='{"repository": "${{ env.REPOSITORY }}"}'
-          ENDPOINT_URL="${{ env.WEBHOOK_URL }}"
+          ENDPOINT_URL="${{ secrets.WEBHOOK_URL }}"
           curl -X POST -H "Content-Type: application/json" -d "$JSON_DATA" "$ENDPOINT_URL"

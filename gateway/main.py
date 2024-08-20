@@ -3,7 +3,7 @@ from typing import Optional
 import uvicorn
 import httpx
 
-app = FastAPI()
+app = FastAPI() 
 
 # Define the base URLs for the microservices
 services = {
