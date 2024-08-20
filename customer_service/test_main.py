@@ -150,7 +150,7 @@ def test_get_all_customers(mock_mongodb):
     assert response_data[1] == mock2
 
     # Ensure find and to_list methods were called correctly
-    mock_mongodb["customers"].find.assert_called_once_with({}, {"_id": 0})
+    mock_mongodb["customers"].find.assert_called_once_with({}, {"_id": 1})
     mock_find.to_list.assert_called_once_with(length=None)
 
 # Test the getAll customers route for a case where no customers are found
