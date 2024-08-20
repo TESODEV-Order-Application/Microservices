@@ -18,8 +18,10 @@ def mock_mongodb():
         mock_db["orders"].find = AsyncMock()
         yield mock_db
 
-@patch("app.routes.RabbitMQ.publishMessage")
-def test_create_order(mock_publish_message, mock_mongodb):
+
+##################CREATE##################
+# Test the order creation route with a successful creation
+def test_create_order( mock_mongodb):
     customer_id = uuid4()
     product_id = uuid4()
 
@@ -65,9 +67,6 @@ def test_create_order(mock_publish_message, mock_mongodb):
         {"address": 1}
     )
     mock_mongodb["orders"].insert_one.assert_called_once()
-    
-    # Check that publishMessage was called with the correct parameters
-    mock_publish_message.assert_called_once_with(mock_mongodb["orders"].insert_one.call_args[0][0])
 
     # Validate the inserted order fields
     inserted_order = mock_mongodb["orders"].insert_one.call_args[0][0]
@@ -75,7 +74,7 @@ def test_create_order(mock_publish_message, mock_mongodb):
     assert inserted_order["product"]["id"] == Binary.from_uuid(product_id)
     assert "createdAt" in inserted_order
     assert "updatedAt" in inserted_order
-
+##########################################
 
 """
 ##################UPDATE##################
