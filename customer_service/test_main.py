@@ -1,14 +1,12 @@
 import pytest
 from fastapi.testclient import TestClient
-from main import app
-from app.routes import router
-from typing import List
-from fastapi import HTTPException
 from datetime import datetime
-
+from unittest.mock import MagicMock
 from unittest.mock import patch, AsyncMock
 from bson import Binary
 from uuid import uuid4, UUID
+
+from main import app
 
 # Create a TestClient for the app
 client = TestClient(app)
@@ -101,8 +99,6 @@ def test_delete_customer(mock_mongodb):
 ##########################################
 
 ##################GETALL##################
-from unittest.mock import MagicMock
-
 # Test the getAll customers route for a successful case with customers present
 def test_get_all_customers(mock_mongodb):
     # Mock the return value of the find operation
