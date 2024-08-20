@@ -6,8 +6,6 @@ on:
     types:
       - completed
 
-
-
 env:
   REPOSITORY: customer-service
   RPATH: customer_service

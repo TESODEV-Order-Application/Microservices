@@ -17,6 +17,7 @@ def mock_mongodb():
         mock_db["customers"].insert_one = AsyncMock()
         yield mock_db
 
+
 # Test the customer creation route
 def test_create_customer(mock_mongodb):
     response = client.post("/customer/", json={
@@ -32,7 +33,6 @@ def test_create_customer(mock_mongodb):
 
     assert response.status_code == 200
     
-    # Validate that the response is a UUID string
     response_uuid = response.json()
     try:
         UUID(response_uuid, version=4)
@@ -42,3 +42,37 @@ def test_create_customer(mock_mongodb):
     
     assert is_valid_uuid, "The response is not a valid UUID"
     assert mock_mongodb["customers"].insert_one.called
+
+
+# Test the customer update route
+def test_update_customer(mock_mongodb):
+    customer_id = uuid4()
+
+    mock_mongodb["customers"].update_one = AsyncMock(return_value=AsyncMock(matched_count=1))
+
+    response = client.put(f"/customer/{customer_id}", json={
+        "name": "Jane Doe",
+        "email": "janedoe@example.com",
+        "address": {
+            "addressLine": "456 Elm St",
+            "city": "Gotham",
+            "country": "Wonderland",
+            "cityCode": 67890
+        }
+    })
+
+    assert response.status_code == 200
+    assert response.json() is True
+
+    # Ensure the update_one method was called with the correct parameters
+    mock_mongodb["customers"].update_one.assert_called_once()
+    
+    called_args = mock_mongodb["customers"].update_one.call_args[0]
+    assert called_args[0] == {"id": Binary.from_uuid(customer_id)}
+    
+    # Check that the "updatedAt" field was added
+    updated_data = called_args[1]["$set"]
+    assert "updatedAt" in updated_data
+    assert updated_data["name"] == "Jane Doe"
+    assert updated_data["email"] == "janedoe@example.com"
+    assert updated_data["address"]["addressLine"] == "456 Elm St"
