@@ -9,7 +9,7 @@ from uuid import uuid4, UUID
 from main import app
 
 # Create a TestClient for the app
-client = TestClient(app)
+client = TestClient(app) 
 
 # Mock MongoDB collection
 @pytest.fixture
