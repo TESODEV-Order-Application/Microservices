@@ -7,6 +7,15 @@ ENV PYTHONUNBUFFERED=1
 ARG conn_str_audit
 ENV conn_str_audit=${conn_str_audit}
 
+ARG rabbit_username
+ENV rabbit_username=${rabbit_username}
+
+ARG rabbit_password
+ENV rabbit_password=${rabbit_password}
+
+ARG ip
+ENV ip=${ip}
+
 # Set the working directory in the container
 WORKDIR /app
 

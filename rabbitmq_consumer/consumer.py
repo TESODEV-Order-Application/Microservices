@@ -1,8 +1,13 @@
 import pika
 import json
 import asyncio
+import os
 
 from MongoDB import mongodb
+
+username = os.getenv('rabbit_username')
+password = os.getenv('rabbit_password')
+ip = os.getenv('ip')
 
 async def save_to_mongodb(order_data):
     print(order_data)
@@ -17,10 +22,10 @@ def callback(ch, method, properties, body):
 def consume():
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(
-            host='193.164.4.17',
+            host=ip,
             port=5672,
             virtual_host='/',
-            credentials=pika.PlainCredentials('guest', 'Xdm@LtkdEoa5FHkM')
+            credentials=pika.PlainCredentials(username, password)
         )
     )
     channel = connection.channel()

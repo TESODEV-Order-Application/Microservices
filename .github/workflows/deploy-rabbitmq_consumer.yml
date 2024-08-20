@@ -14,7 +14,11 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
   WEBHOOK_URL: http:/193.164.4.17:5000/webhook
+  
   conn_str_audit: "mongodb://AuditAdmin:DFjMNrpSpa3pnB98@193.164.4.17:27018/"
+  rabbit_username: "guest"
+  rabbit_password: "Xdm@LtkdEoa5FHkM"
+  ip: "193.164.4.17"
 
 
 jobs:
@@ -54,6 +58,9 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             conn_str_audit=${{ env.conn_str_audit }}
+            rabbit_username=${{ env.rabbit_username }}
+            rabbit_password=${{ env.rabbit_password }}
+            ip=${{ env.ip }}
 
       - name: Checkout code
         uses: actions/checkout@v2
