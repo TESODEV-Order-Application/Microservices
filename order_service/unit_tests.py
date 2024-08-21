@@ -66,42 +66,90 @@ def test_create_order(mock_publish, mock_mongodb):
     assert mock_publish.called  # Ensure the publishMessage function was called
 ##########################################
 
-"""
 ##################UPDATE##################
-# Test the customer update route
-def test_update_customer(mock_mongodb):
+# Test the order update route for a successful case
+def test_update_order_success(mock_mongodb):
+    order_id = uuid4()
     customer_id = uuid4()
+    product_id = uuid4()
 
-    mock_mongodb["customers"].update_one = AsyncMock(return_value=AsyncMock(matched_count=1))
-
-    response = client.put(f"/customer/{customer_id}", json={
-        "name": "Jane Doe",
-        "email": "janedoe@example.com",
+    # Mock the return value of the find_one operation to simulate that the customer exists with a valid address
+    mock_mongodb["customers"].find_one = AsyncMock(return_value={
         "address": {
-            "addressLine": "456 Elm St",
-            "city": "Gotham",
+            "addressLine": "123 Main St",
+            "city": "Metropolis",
             "country": "Wonderland",
-            "cityCode": 67890
+            "cityCode": 12345
         }
     })
+
+    # Mock the return value of the update_one operation to simulate a successful update
+    mock_mongodb["orders"].update_one = AsyncMock(return_value=AsyncMock(matched_count=1))
+
+    # The data to update the order
+    update_data = {
+        "customerId": str(customer_id),
+        "quantity": 2,
+        "price": 150.0,
+        "status": "processing",
+        "product": {
+            "id": str(product_id),
+            "name": "Product2",
+            "imageUrl": "http://example.com/product2.png"
+        }
+    }
+
+    response = client.put(f"/order/{order_id}", json=update_data)
 
     assert response.status_code == 200
     assert response.json() is True
 
-    # Ensure the update_one method was called with the correct parameters
-    mock_mongodb["customers"].update_one.assert_called_once()
-    
-    called_args = mock_mongodb["customers"].update_one.call_args[0]
-    assert called_args[0] == {"id": Binary.from_uuid(customer_id)}
-    
-    # Check that the "updatedAt" field was added
-    updated_data = called_args[1]["$set"]
-    assert "updatedAt" in updated_data
-    assert updated_data["name"] == "Jane Doe"
-    assert updated_data["email"] == "janedoe@example.com"
-    assert updated_data["address"]["addressLine"] == "456 Elm St"
+    # Ensure find_one was called with the correct parameters
+    mock_mongodb["customers"].find_one.assert_called_once_with({"id": Binary.from_uuid(customer_id)}, {"address": 1})
+
+    # Ensure update_one was called with the correct parameters
+    mock_mongodb["orders"].update_one.assert_called_once()
+    updated_order = mock_mongodb["orders"].update_one.call_args[0][1]["$set"]
+    assert updated_order["quantity"] == 2
+    assert updated_order["price"] == 150.0
+    assert updated_order["status"] == "processing"
+    assert updated_order["address"]["city"] == "Metropolis"
+    assert updated_order["product"]["id"] == Binary.from_uuid(product_id)
+
+# Test the order update route for a case where the customer is not found
+def test_update_order_customer_not_found(mock_mongodb):
+    order_id = uuid4()
+    customer_id = uuid4()
+    product_id = uuid4()
+
+    # Mock the return value of the find_one operation to simulate customer not found
+    mock_mongodb["customers"].find_one = AsyncMock(return_value=None)
+
+    # The data to update the order
+    update_data = {
+        "customerId": str(customer_id),
+        "quantity": 2,
+        "price": 150.0,
+        "status": "processing",
+        "product": {
+            "id": str(product_id),
+            "name": "Product2",
+            "imageUrl": "http://example.com/product2.png"
+        }
+    }
+
+    response = client.put(f"/order/{order_id}", json=update_data)
+
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Customer not found"}
+
+    # Ensure find_one was called with the correct parameters
+    mock_mongodb["customers"].find_one.assert_called_once_with({"id": Binary.from_uuid(customer_id)}, {"address": 1})
+
+    # Ensure update_one was not called since the customer was not found
+    mock_mongodb["orders"].update_one.assert_not_called()
 ##########################################
-"""
+
 
 
 ##################DELETE##################

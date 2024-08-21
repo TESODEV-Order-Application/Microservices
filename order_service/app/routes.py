@@ -35,16 +35,24 @@ async def create(order: UpdateOrder):
     publishMessage(order.dict()) # RabbitMQ
     return order.id
 
-########################################################
+
 @router.put("/{orderId}", response_model=bool)
 async def update(orderId: UUID, order: UpdateOrder):
-    orderId = Binary.from_uuid(orderId)
+    response = await mongodb.collections["customers"].find_one({"id": Binary.from_uuid(order.customerId)}, {"address": 1})
+    if response is None:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    
+
+    orderId = Binary.from_uuid(orderId) 
+    order.customerId = Binary.from_uuid(order.customerId)
+    order.product.id = Binary.from_uuid(order.product.id)
 
     order = order.dict()
     order["updatedAt"] = datetime.utcnow()
+    order["address"] = response["address"]
 
     return (await mongodb.collections["orders"].update_one({"id": orderId}, {"$set": order}, upsert=False)).matched_count > 0
-########################################################
+
 
 @router.delete("/{orderId}", response_model=bool)
 async def delete(orderId: UUID): #OTHER RELATİON LOGİC
