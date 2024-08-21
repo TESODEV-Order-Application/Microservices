@@ -383,44 +383,41 @@ def test_get_orders_by_customer_not_found(mock_mongodb):
     mock_mongodb["orders"].find().to_list.assert_called_once_with(length=None)
 
 ##########################################
-"""
-#################VALİDATE##################
-# Test the customer validation route for a case where the customer exists
-def test_validate_customer_exists(mock_mongodb):
-    customer_id = uuid4()
 
-    # Mock the return value of the find_one operation to simulate that the customer exists
-    mock_mongodb["customers"].find_one = AsyncMock(return_value={
-        "id": Binary.from_uuid(customer_id),
-        "name": "John Doe",
-        "email": "johndoe@example.com"
-    })
+#################CHANGESTATUS##################
+# Test the order status change route for a successful case
+def test_change_order_status_success(mock_mongodb):
+    order_id = uuid4()
+    new_status = "shipped"
 
-    response = client.get(f"/customer/validate/{customer_id}")
+    # Mock the return value of the update_one operation to simulate a successful update
+    mock_mongodb["orders"].update_one = AsyncMock(return_value=AsyncMock(matched_count=1))
+
+    response = client.put(f"/order/changeStatus/{order_id}", json=new_status)
 
     assert response.status_code == 200
     assert response.json() is True
 
-    # Ensure find_one was called with the correct parameters
-    mock_mongodb["customers"].find_one.assert_called_once_with(
-        {"id": Binary.from_uuid(customer_id)}, {"_id": 0}
+    # Ensure update_one was called with the correct parameters
+    mock_mongodb["orders"].update_one.assert_called_once_with(
+        {"id": Binary.from_uuid(order_id)}, {"$set": {"status": new_status}}, upsert=False
     )
 
-# Test the customer validation route for a case where the customer does not exist
-def test_validate_customer_not_exists(mock_mongodb):
-    customer_id = uuid4()
+# Test the order status change route for a case where the order is not found
+def test_change_order_status_not_found(mock_mongodb):
+    order_id = uuid4()
+    new_status = "shipped"
 
-    # Mock the return value of the find_one operation to simulate that the customer does not exist
-    mock_mongodb["customers"].find_one = AsyncMock(return_value=None)
+    # Mock the return value of the update_one operation to simulate a failure (no matching order found)
+    mock_mongodb["orders"].update_one = AsyncMock(return_value=AsyncMock(matched_count=0))
 
-    response = client.get(f"/customer/validate/{customer_id}")
+    response = client.put(f"/order/changeStatus/{order_id}", json=new_status)
 
     assert response.status_code == 200
     assert response.json() is False
 
-    # Ensure find_one was called with the correct parameters
-    mock_mongodb["customers"].find_one.assert_called_once_with(
-        {"id": Binary.from_uuid(customer_id)}, {"_id": 0}
+    # Ensure update_one was called with the correct parameters
+    mock_mongodb["orders"].update_one.assert_called_once_with(
+        {"id": Binary.from_uuid(order_id)}, {"$set": {"status": new_status}}, upsert=False
     )
 ##########################################
-"""
