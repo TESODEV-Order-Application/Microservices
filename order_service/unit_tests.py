@@ -27,9 +27,10 @@ def test_create_order(mock_mongodb):
     # Mock the return value of the find_one operation to simulate that the customer exists with a valid address
     mock_mongodb["customers"].find_one = AsyncMock(return_value={
         "address": {
-            "street": "123 Main St",
+            "addressLine": "123 Main St",
             "city": "Sample City",
-            "zip_code": "12345"
+            "country": "Sample Country",
+            "cityCode": 12345
         }
     })
     
