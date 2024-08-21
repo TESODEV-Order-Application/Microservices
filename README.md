@@ -51,6 +51,7 @@ The microservices repository for the TESODEV Order Application Project
 
 ### 4. RabbitMQ Consumer
 * The RabbitMQ Consumer is responsible for processing order logs sent by the Order Microservice. It listens to the order_audit_log queue, retrieves messages, and stores the order logs in the Audit Database.
+![RabbitMQ](https://github.com/user-attachments/assets/d1d009e1-3991-4215-aa66-480c544ac9ef)
 
 ### 5. RabbitMQ and MongoDB:
 * RabbitMQ is used for message brokering, particularly for sending order logs to the Audit Database.
