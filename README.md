@@ -114,7 +114,7 @@ The microservices repository for the TESODEV Order Application Project
 ### 1. Unit Testing
 * Upon pushing code to the repository, the GitHub Action triggers the unit tests for each service.
 
-* The ```test_customer_service.yml``` and ```test_order_service.yml``` file contains the configuration for running these tests. It sets up the necessary environment, installs dependencies, and runs the test suite using Pytest.
+* The ```test_customer_service.yml``` and ```test_order_service.yml``` file contains the configuration for running these tests. It sets up the necessary environment, installs dependencies, and runs the test suite using Pytest. The unit tests can be found in each microservice's ```unit_tests.py``` file.
 
 * **ScreenShot of Unit Test Results**
 ![Github Actions Unit Test Results](https://github.com/user-attachments/assets/9bc52958-f4ab-43da-becf-d357660204ba)
