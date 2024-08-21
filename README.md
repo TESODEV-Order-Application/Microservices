@@ -165,4 +165,16 @@ The microservices repository for the TESODEV Order Application Project
 * ```PUT /customer/{customerId}```: Updates the details of an existing customer based on the provided customer ID.
 * ```DELETE /customer/{customerId}```: Deletes an existing customer using the customer ID.
 * ```GET /customer/{customerId}```: Retrieves a specific customer by ID.
-* ```ET /customer/validate/{customerId}```: Validates if a customer exists based on the customer ID.
+* ```GET /customer/validate/{customerId}```: Validates if a customer exists based on the customer ID.
+
+### 2. Order Microservice
+>Swagger URL: [http://193.164.4.17:8002/docs](http://193.164.4.17:8002/docs)
+![order swagger](https://github.com/user-attachments/assets/dad4c27e-a084-41db-85b1-3b1b49dad634)
+
+* ```GET /order/```: Retrieves a list of all orders.
+* ```POST /order/```: Creates a new order.
+* ```PUT /order/{orderId}```: Updates an existing order based on the provided order ID.
+* ```DELETE /order/{orderId}```: Deletes an existing order using the order ID.
+* ```GET /order/getByCustomer/{customerId}```: Retrieves all orders placed by a specific customer using the customer ID.
+* ```GET /order/getByOrder/{orderId}```: Retrieves details of a specific order by order ID.
+* ```PUT /order/changeStatus/{orderId}```: Changes the status of an order.
