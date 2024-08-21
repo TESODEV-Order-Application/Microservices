@@ -265,24 +265,24 @@ def test_get_order_success(mock_mongodb):
     mock_mongodb["orders"].find_one.assert_called_once_with(
         {"id": Binary.from_uuid(order_id)}, {"_id": 0}
     )
-"""
+
 # Test the order retrieval route for a case where the order is not found
-def test_get_customer_not_found(mock_mongodb):
-    customer_id = uuid4()
+def test_get_order_not_found(mock_mongodb):
+    order_id = uuid4()
 
     # Mock the return value of the find_one operation to simulate not found
-    mock_mongodb["customers"].find_one = AsyncMock(return_value=None)
+    mock_mongodb["orders"].find_one = AsyncMock(return_value=None)
 
-    response = client.get(f"/customer/{customer_id}")
+    response = client.get(f"/order/getByOrder/{order_id}")
 
     assert response.status_code == 404
-    assert response.json() == {"detail": "Customer not found"}
+    assert response.json() == {"detail": "Order not found"}
 
     # Ensure find_one was called with the correct parameters
-    mock_mongodb["customers"].find_one.assert_called_once_with(
-        {"id": Binary.from_uuid(customer_id)}, {"_id": 0}
+    mock_mongodb["orders"].find_one.assert_called_once_with(
+        {"id": Binary.from_uuid(order_id)}, {"_id": 0}
     )
-"""
+
 ##########################################
 
 """
