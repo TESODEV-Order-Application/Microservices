@@ -125,4 +125,8 @@ The microservices repository for the TESODEV Order Application Project
 * The ```deploy_customer_service.yml```, ```deploy_order_service.yml``` and ```deploy_gateway.yml``` files manages this part of the process. It includes steps for building the Docker images and deploying them.
 
 ### 3. Deployment
-* The deployment is fully automated, the built Docker images are deployed to the server by sending a request to the [Deployment-Webhook](https://github.com/TESODEV-Order-Application/Deployment-Webhook) that listens on port 5000 for re-deploying the services.
+* The deployment is fully automated, the built Docker images are deployed to the server by sending a request to the [Deployment-Webhook](https://github.com/TESODEV-Order-Application/Deployment-Webhook) that listens on port 5000 to update any changed service.
+
+## Docker Containerization
+>The project uses Docker to containerize the microservices, databases and some other services.
+![Docker Contaieners shown in Portrainer](https://github.com/user-attachments/assets/250349f4-5026-49bd-b496-6c4a9ade624b)
