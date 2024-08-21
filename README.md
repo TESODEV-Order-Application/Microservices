@@ -108,7 +108,6 @@ The microservices repository for the TESODEV Order Application Project
 
 ## CI/CD Pipeline
 > The CI/CD pipeline for this project is configured using GitHub Actions. The pipeline automates the testing, building, and deployment of the microservices whenever there is a code change.
-
 ![I/CD pipeline](https://github.com/user-attachments/assets/b7e0888b-451d-48fb-9880-da0db625f19f)
 
 ### 1. Unit Testing
