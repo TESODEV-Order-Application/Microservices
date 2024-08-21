@@ -121,33 +121,47 @@ def test_delete_order(mock_mongodb):
     mock_mongodb["orders"].delete_one.assert_called_once_with({"id": Binary.from_uuid(order_id)})
 ##########################################
 
-"""
+
 ##################GETALL##################
-# Test the getAll customers route for a successful case with customers present
-def test_get_all_customers(mock_mongodb):
+# Test the getAll orders route for a successful case with orders present
+def test_get_all_orders(mock_mongodb):
     # Mock the return value of the find operation
     mock1 = {
         "id": str(uuid4()),
-        "name": "John Doe",
-        "email": "johndoe@example.com",
+        "customerId": str(uuid4()),
+        "quantity": 1,
+        "price": 100.0,
+        "status": "pending",
         "address": {
             "addressLine": "123 Main St",
             "city": "Metropolis",
             "country": "Wonderland",
             "cityCode": 12345
         },
+        "product": {
+            "id": str(uuid4()),
+            "name": "Product1",
+            "imageUrl": "http://example.com/product1.png"
+        },
         "createdAt": datetime.utcnow().isoformat(),
         "updatedAt": datetime.utcnow().isoformat()
     }
     mock2 = {
         "id": str(uuid4()),
-        "name": "Jane Doe",
-        "email": "janedoe@example.com",
+        "customerId": str(uuid4()),
+        "quantity": 2,
+        "price": 200.0,
+        "status": "shipped",
         "address": {
             "addressLine": "456 Elm St",
             "city": "Gotham",
             "country": "Wonderland",
             "cityCode": 67890
+        },
+        "product": {
+            "id": str(uuid4()),
+            "name": "Product2",
+            "imageUrl": "http://example.com/product2.png"
         },
         "createdAt": datetime.utcnow().isoformat(),
         "updatedAt": datetime.utcnow().isoformat()
@@ -157,27 +171,31 @@ def test_get_all_customers(mock_mongodb):
         mock1,
         mock2
     ])
-    mock_mongodb["customers"].find.return_value = mock_find
+    mock_mongodb["orders"].find.return_value = mock_find
 
-    response = client.get("/customer/")
+    response = client.get("/order/")
 
     assert response.status_code == 200
 
-    # Check that the returned customer list matches the mock data
+    # Check that the returned order list matches the mock data
     response_data = response.json()
     assert len(response_data) == 2
     
     # Verify that the specific fields match the mock data
-    assert response_data[0]["name"] == mock1["name"]
-    assert response_data[0]["email"] == mock1["email"]
+    assert response_data[0]["quantity"] == mock1["quantity"]
+    assert response_data[0]["price"] == mock1["price"]
+    assert response_data[0]["status"] == mock1["status"]
     assert response_data[0]["address"]["city"] == mock1["address"]["city"]
+    assert response_data[0]["product"]["name"] == mock1["product"]["name"]
     
-    assert response_data[1]["name"] == mock2["name"]
-    assert response_data[1]["email"] == mock2["email"]
+    assert response_data[1]["quantity"] == mock2["quantity"]
+    assert response_data[1]["price"] == mock2["price"]
+    assert response_data[1]["status"] == mock2["status"]
     assert response_data[1]["address"]["city"] == mock2["address"]["city"]
+    assert response_data[1]["product"]["name"] == mock2["product"]["name"]
 
     # Ensure find and to_list methods were called correctly
-    mock_mongodb["customers"].find.assert_called_once_with({}, {"_id": 0})
+    mock_mongodb["orders"].find.assert_called_once_with({}, {"_id": 0})
     mock_find.to_list.assert_called_once_with(length=None)
 
 # Test the getAll customers route for a case where no customers are found
@@ -198,7 +216,7 @@ def test_get_all_customers_empty(mock_mongodb):
     mock_mongodb["customers"].find().to_list.assert_called_once_with(length=None)
 ##########################################
 
-
+"""
 ##################GET#####################
 # Test the customer retrieval route for a successful case
 def test_get_customer_success(mock_mongodb):
