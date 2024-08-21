@@ -15,6 +15,7 @@ The microservices repository for the TESODEV Order Application Project
     apt upgrade
     apt autoremove
     ```
+
 ## 2. Setting Up Docker
 * Install docker
     > Youtube Guide on [Setting Up Docker](https://www.youtube.com/watch?v=cqbh-RneBlk)
@@ -78,8 +79,8 @@ The microservices repository for the TESODEV Order Application Project
     https://www.redswitches.com/blog/fix-temporary-failure-in-name-resolution/#:~:text=Resolving%20the%20Temporary%20failure%20in,can%20ensure%20seamless%20internet%20connectivity.
     ```
 
-## 5. Setting Up Mongo DB
-* Deploy Mongo DB
+## 5. Setting Up MongoDB
+* Deploy MongoDB
     ```
     docker run -d --name mongodb -e MONGO_INITDB_ROOT_USERNAME=<USR> -e MONGO_INITDB_ROOT_PASSWORD=<PDW> -p 27017:27017 -v mongodb:/data/db --restart always mongo:latest
     ```
@@ -100,3 +101,7 @@ The microservices repository for the TESODEV Order Application Project
    
    Admin->guest->Update this user-><PASSWORD>->Update User
    ```
+
+
+
+# Project
