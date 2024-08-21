@@ -159,3 +159,10 @@ The microservices repository for the TESODEV Order Application Project
 ### 1. Customer Microservice
 >Swagger URL: [http://193.164.4.17:8001/docs](http://193.164.4.17:8001/docs)
 ![customer swagger](https://github.com/user-attachments/assets/8352886c-fa1f-4107-98cc-d5c997bddfee)
+
+* ```GET /customer/```: Retrieves a list of all customers.
+* ```POST /customer/```: Creates a new customer.
+* ```PUT /customer/{customerId}```: Updates the details of an existing customer based on the provided customer ID.
+* ```DELETE /customer/{customerId}```: Deletes an existing customer using the customer ID.
+* ```GET /customer/{customerId}```: Retrieves a specific customer by ID.
+* ```ET /customer/validate/{customerId}```: Validates if a customer exists based on the customer ID.
