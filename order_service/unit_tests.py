@@ -24,8 +24,14 @@ def mock_mongodb():
 def test_create_order(mock_mongodb):
     order_id = uuid4()
     
-    # Mock the find_one operation to simulate that the customer exists
-    mock_mongodb["customers"].find_one = AsyncMock(return_value={"address": "123 Main St"})
+    # Mock the return value of the find_one operation to simulate that the customer exists with a valid address
+    mock_mongodb["customers"].find_one = AsyncMock(return_value={
+        "address": {
+            "street": "123 Main St",
+            "city": "Sample City",
+            "zip_code": "12345"
+        }
+    })
     
     # Mock the insert_one operation to simulate successful order creation
     mock_mongodb["orders"].insert_one = AsyncMock()
