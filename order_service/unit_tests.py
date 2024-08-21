@@ -217,47 +217,56 @@ def test_get_all_orders_empty(mock_mongodb):
     mock_mongodb["orders"].find().to_list.assert_called_once_with(length=None)
 ##########################################
 
-"""
-##################GET#####################
-# Test the customer retrieval route for a successful case
-def test_get_customer_success(mock_mongodb):
-    customer_id = uuid4()
+################GETBYORDER################
+# Test the order retrieval route for a successful case
+def test_get_order_success(mock_mongodb):
+    order_id = uuid4()
 
     # Mock the return value of the find_one operation
-    mock_mongodb["customers"].find_one = AsyncMock(return_value={
-        "id": Binary.from_uuid(customer_id),
-        "name": "John Doe",
-        "email": "johndoe@example.com",
+    mock_mongodb["orders"].find_one = AsyncMock(return_value={
+        "id": Binary.from_uuid(order_id),
+        "customerId": str(uuid4()),
+        "quantity": 1,
+        "price": 100.0,
+        "status": "pending",
         "address": {
             "addressLine": "123 Main St",
             "city": "Metropolis",
             "country": "Wonderland",
             "cityCode": 12345
         },
+        "product": {
+            "id": str(uuid4()),
+            "name": "Product1",
+            "imageUrl": "http://example.com/product1.png"
+        },
         "createdAt": datetime.utcnow().isoformat(),
         "updatedAt": datetime.utcnow().isoformat()
     })
 
-    response = client.get(f"/customer/{customer_id}")
+    response = client.get(f"/order/getByOrder/{order_id}")
 
     assert response.status_code == 200
 
-    # Check that the returned customer data matches the mock data
+    # Check that the returned order data matches the mock data
     response_data = response.json()
-    assert response_data["id"] == str(customer_id)
-    assert response_data["name"] == "John Doe"
-    assert response_data["email"] == "johndoe@example.com"
+    assert response_data["id"] == str(order_id)
+    assert response_data["customerId"]
+    assert response_data["quantity"] == 1
+    assert response_data["price"] == 100.0
+    assert response_data["status"] == "pending"
     assert response_data["address"]["addressLine"] == "123 Main St"
     assert response_data["address"]["city"] == "Metropolis"
+    assert response_data["product"]["name"] == "Product1"
     assert "createdAt" in response_data
     assert "updatedAt" in response_data
 
     # Ensure find_one was called with the correct parameters
-    mock_mongodb["customers"].find_one.assert_called_once_with(
-        {"id": Binary.from_uuid(customer_id)}, {"_id": 0}
+    mock_mongodb["orders"].find_one.assert_called_once_with(
+        {"id": Binary.from_uuid(order_id)}, {"_id": 0}
     )
-
-# Test the customer retrieval route for a case where the customer is not found
+"""
+# Test the order retrieval route for a case where the order is not found
 def test_get_customer_not_found(mock_mongodb):
     customer_id = uuid4()
 
@@ -273,8 +282,10 @@ def test_get_customer_not_found(mock_mongodb):
     mock_mongodb["customers"].find_one.assert_called_once_with(
         {"id": Binary.from_uuid(customer_id)}, {"_id": 0}
     )
+"""
 ##########################################
 
+"""
 #################VALİDATE##################
 # Test the customer validation route for a case where the customer exists
 def test_validate_customer_exists(mock_mongodb):
