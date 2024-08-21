@@ -140,15 +140,18 @@ The microservices repository for the TESODEV Order Application Project
 ![System Schema](https://github.com/user-attachments/assets/cb5e9ee5-ef43-4f5d-a3fa-45015f094b06)
 
 ### 1. API Gateway:
-
 * Acts as a single entry point for external requests. It routes the requests to the appropriate microservices (Customer Microservice, Order Microservice).
-Customer Microservice:
 
-Handles all operations related to customers. It interacts with the main MongoDB database to store and retrieve customer data.
-Order Microservice:
+### 2. Customer Microservice:
 
-Manages the order-related operations. It uses the CQRS pattern to handle commands and queries separately and logs order actions to the audit database using RabbitMQ for message brokering.
-RabbitMQ and MongoDB:
+* Handles all operations related to customers. It interacts with the main MongoDB database to store and retrieve customer data.
 
-RabbitMQ is used for message brokering, particularly for sending order logs to the Audit Database.
-MongoDB is used as the primary data storage solution, with separate instances for main data and audit logs.
+### 3. Order Microservice:
+
+* Manages the order-related operations. It uses the CQRS pattern to handle commands and queries separately and logs order actions to the audit database using RabbitMQ for message brokering.
+
+### 4. RabbitMQ and MongoDB:
+
+* RabbitMQ is used for message brokering, particularly for sending order logs to the Audit Database.
+
+* MongoDB is used as the primary data storage solution, with separate instances for main data and audit logs.
