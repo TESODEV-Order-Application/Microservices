@@ -21,7 +21,10 @@ def mock_mongodb():
 #customer
 ##################CREATE##################
 # Test the order creation route
-def test_create_order(mock_mongodb):
+from unittest.mock import patch, AsyncMock
+
+@patch("app.routes.publishMessage")  # Mock the publishMessage function
+def test_create_order(mock_publish, mock_mongodb):
     order_id = uuid4()
     
     # Mock the return value of the find_one operation to simulate that the customer exists with a valid address
@@ -60,6 +63,7 @@ def test_create_order(mock_mongodb):
     
     assert is_valid_uuid, "The response is not a valid UUID"
     assert mock_mongodb["orders"].insert_one.called
+    assert mock_publish.called  # Ensure the publishMessage function was called
 ##########################################
 
 """
