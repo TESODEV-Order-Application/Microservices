@@ -5,6 +5,8 @@ The microservices repository for the TESODEV Order Application Project
 > [Basic writing and formatting syntax](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
 
 
+# Setup
+
 ## 1.	Set Up a VPS:
 * If you haven’t already, provision a VPS (Virtual Private Server) from a cloud provider (such as DigitalOcean, AWS, or Google Cloud). Install your desired operating system (e.g., Ubuntu).
 * Update and Upgrade the server.
