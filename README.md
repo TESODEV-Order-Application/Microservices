@@ -49,7 +49,10 @@ The microservices repository for the TESODEV Order Application Project
 ### 3. Order Microservice:
 * Manages the order-related operations. It interacts with the main MongoDB database to store and retrieve order data and logs order actions to the audit database using RabbitMQ for message brokering.
 
-### 4. RabbitMQ and MongoDB:
+### 4. RabbitMQ Consumer
+* The RabbitMQ Consumer is responsible for processing order logs sent by the Order Microservice. It listens to the order_audit_log queue, retrieves messages, and stores the order logs in the Audit Database.
+
+### 5. RabbitMQ and MongoDB:
 * RabbitMQ is used for message brokering, particularly for sending order logs to the Audit Database.
 
 * MongoDB is used as the primary data storage solution, with separate instances for main data and audit logs.
