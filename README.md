@@ -178,3 +178,12 @@ The microservices repository for the TESODEV Order Application Project
 * ```GET /order/getByCustomer/{customerId}```: Retrieves all orders placed by a specific customer using the customer ID.
 * ```GET /order/getByOrder/{orderId}```: Retrieves details of a specific order by order ID.
 * ```PUT /order/changeStatus/{orderId}```: Changes the status of an order.
+
+### 3. API Gateway
+>Swagger URL: [http://193.164.4.17:8080/docs](http://193.164.4.17:8080/docs)
+![gateway swagger](https://github.com/user-attachments/assets/006a6bcc-db83-4f8a-94ac-8dc984804a3a)
+
+* ```GET /{full_path}```: A generic endpoint that proxies GET requests to the appropriate microservice based on the provided full path.
+* ```POST /{full_path}```: Proxies POST requests to the appropriate microservice.
+* ```PUT /{full_path}```: Proxies PUT requests.
+* ```DELETE /{full_path}```: Proxies DELETE requests.
