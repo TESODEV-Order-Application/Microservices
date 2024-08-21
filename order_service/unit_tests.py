@@ -393,7 +393,7 @@ def test_change_order_status_success(mock_mongodb):
     # Mock the return value of the update_one operation to simulate a successful update
     mock_mongodb["orders"].update_one = AsyncMock(return_value=AsyncMock(matched_count=1))
 
-    response = client.put(f"/order/changeStatus/{order_id}", json=new_status)
+    response = client.put(f"/order/changeStatus/{order_id}", json={"status": new_status})
 
     assert response.status_code == 200
     assert response.json() is True
@@ -411,7 +411,7 @@ def test_change_order_status_not_found(mock_mongodb):
     # Mock the return value of the update_one operation to simulate a failure (no matching order found)
     mock_mongodb["orders"].update_one = AsyncMock(return_value=AsyncMock(matched_count=0))
 
-    response = client.put(f"/order/changeStatus/{order_id}", json=new_status)
+    response = client.put(f"/order/changeStatus/{order_id}", json={"status": new_status})
 
     assert response.status_code == 200
     assert response.json() is False
