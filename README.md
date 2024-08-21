@@ -112,7 +112,7 @@ The microservices repository for the TESODEV Order Application Project
 ### 1. Unit Testing
 * Upon pushing code to the repository, the GitHub Action triggers the unit tests for each service. As seen in the provided test result (Github Actions Unit Test Results.png), all tests were executed, and the results indicate that all tests passed successfully with some warnings.
 
-* The ```test_customer_service.yml``` and ```test_order_service.yml`` file contains the configuration for running these tests. It sets up the necessary environment, installs dependencies, and runs the test suite using Pytest.
+* The ```test_customer_service.yml``` and ```test_order_service.yml``` file contains the configuration for running these tests. It sets up the necessary environment, installs dependencies, and runs the test suite using Pytest.
 
 ### 2. Building Docker Images
 * After the tests pass, the pipeline moves on to build Docker images for the microservices. The images are then pushed to the GitHub Container Registry or any other specified container registry.
