@@ -8,26 +8,25 @@ from uuid import uuid4, UUID
 
 from main import app
 
-# Create a TestClient for the app
+#Test client
 client = TestClient(app)
 
-# Mock MongoDB collection
+#Mock MongoDB collection
 @pytest.fixture
 def mock_mongodb():
     with patch("app.routes.mongodb.collections") as mock_db:
         mock_db["orders"].insert_one = AsyncMock()
         yield mock_db
 
-#customer
+
 ##################CREATE##################
 # Test the order creation route
 from unittest.mock import patch, AsyncMock
 
-@patch("app.routes.publishMessage")  # Mock the publishMessage function
+@patch("app.routes.publishMessage")
 def test_create_order(mock_publish, mock_mongodb):
     order_id = uuid4()
     
-    # Mock the return value of the find_one operation to simulate that the order exists with a valid address
     mock_mongodb["customers"].find_one = AsyncMock(return_value={
         "address": {
             "addressLine": "123 Main St",
@@ -37,7 +36,6 @@ def test_create_order(mock_publish, mock_mongodb):
         }
     })
     
-    # Mock the insert_one operation to simulate successful order creation
     mock_mongodb["orders"].insert_one = AsyncMock()
 
     response = client.post("/order/", json={
@@ -63,7 +61,7 @@ def test_create_order(mock_publish, mock_mongodb):
     
     assert is_valid_uuid, "The response is not a valid UUID"
     assert mock_mongodb["orders"].insert_one.called
-    assert mock_publish.called  # Ensure the publishMessage function was called
+    assert mock_publish.called
 ##########################################
 
 ##################UPDATE##################
@@ -73,7 +71,6 @@ def test_update_order_success(mock_mongodb):
     customer_id = uuid4()
     product_id = uuid4()
 
-    # Mock the return value of the find_one operation to simulate that the customer exists with a valid address
     mock_mongodb["customers"].find_one = AsyncMock(return_value={
         "address": {
             "addressLine": "123 Main St",
@@ -83,10 +80,8 @@ def test_update_order_success(mock_mongodb):
         }
     })
 
-    # Mock the return value of the update_one operation to simulate a successful update
     mock_mongodb["orders"].update_one = AsyncMock(return_value=AsyncMock(matched_count=1))
 
-    # The data to update the order
     update_data = {
         "customerId": str(customer_id),
         "quantity": 2,
@@ -104,10 +99,8 @@ def test_update_order_success(mock_mongodb):
     assert response.status_code == 200
     assert response.json() is True
 
-    # Ensure find_one was called with the correct parameters
     mock_mongodb["customers"].find_one.assert_called_once_with({"id": Binary.from_uuid(customer_id)}, {"address": 1})
 
-    # Ensure update_one was called with the correct parameters
     mock_mongodb["orders"].update_one.assert_called_once()
     updated_order = mock_mongodb["orders"].update_one.call_args[0][1]["$set"]
     assert updated_order["quantity"] == 2
@@ -122,10 +115,8 @@ def test_update_order_customer_not_found(mock_mongodb):
     customer_id = uuid4()
     product_id = uuid4()
 
-    # Mock the return value of the find_one operation to simulate customer not found
     mock_mongodb["customers"].find_one = AsyncMock(return_value=None)
 
-    # The data to update the order
     update_data = {
         "customerId": str(customer_id),
         "quantity": 2,
@@ -143,10 +134,8 @@ def test_update_order_customer_not_found(mock_mongodb):
     assert response.status_code == 404
     assert response.json() == {"detail": "Customer not found"}
 
-    # Ensure find_one was called with the correct parameters
     mock_mongodb["customers"].find_one.assert_called_once_with({"id": Binary.from_uuid(customer_id)}, {"address": 1})
 
-    # Ensure update_one was not called since the customer was not found
     mock_mongodb["orders"].update_one.assert_not_called()
 ##########################################
 
@@ -155,7 +144,6 @@ def test_update_order_customer_not_found(mock_mongodb):
 def test_delete_order(mock_mongodb):
     order_id = uuid4()
 
-    # Mock the return value of the delete operation
     mock_mongodb["orders"].delete_one = AsyncMock(return_value=AsyncMock(deleted_count=1))
 
     response = client.delete(f"/order/{order_id}")
@@ -163,7 +151,6 @@ def test_delete_order(mock_mongodb):
     assert response.status_code == 200
     assert response.json() is True
 
-    # Ensure the delete_one method was called with the correct parameters
     mock_mongodb["orders"].delete_one.assert_called_once_with({"id": Binary.from_uuid(order_id)})
 ##########################################
 
@@ -171,7 +158,6 @@ def test_delete_order(mock_mongodb):
 ##################GETALL##################
 # Test the getAll orders route for a successful case with orders present
 def test_get_all_orders(mock_mongodb):
-    # Mock the return value of the find operation
     mock1 = {
         "id": str(uuid4()),
         "customerId": str(uuid4()),
@@ -223,11 +209,9 @@ def test_get_all_orders(mock_mongodb):
 
     assert response.status_code == 200
 
-    # Check that the returned order list matches the mock data
     response_data = response.json()
     assert len(response_data) == 2
     
-    # Verify that the specific fields match the mock data
     assert response_data[0]["quantity"] == mock1["quantity"]
     assert response_data[0]["price"] == mock1["price"]
     assert response_data[0]["status"] == mock1["status"]
@@ -240,25 +224,21 @@ def test_get_all_orders(mock_mongodb):
     assert response_data[1]["address"]["city"] == mock2["address"]["city"]
     assert response_data[1]["product"]["name"] == mock2["product"]["name"]
 
-    # Ensure find and to_list methods were called correctly
     mock_mongodb["orders"].find.assert_called_once_with({}, {"_id": 0})
     mock_find.to_list.assert_called_once_with(length=None)
 
 
 # Test the getAll orders route for a case where no orders are found
 def test_get_all_orders_empty(mock_mongodb):
-    # Mock the return value of the find operation to return an empty list
     mock_mongodb["orders"].find.return_value.to_list = AsyncMock(return_value=[])
 
     response = client.get("/order/")
 
     assert response.status_code == 200
 
-    # Check that the returned order list is empty
     response_data = response.json()
     assert response_data == []
 
-    # Ensure find and to_list methods were called correctly
     mock_mongodb["orders"].find.assert_called_once_with({}, {"_id": 0})
     mock_mongodb["orders"].find().to_list.assert_called_once_with(length=None)
 ##########################################
@@ -268,7 +248,6 @@ def test_get_all_orders_empty(mock_mongodb):
 def test_get_order_success(mock_mongodb):
     order_id = uuid4()
 
-    # Mock the return value of the find_one operation
     mock_mongodb["orders"].find_one = AsyncMock(return_value={
         "id": Binary.from_uuid(order_id),
         "customerId": str(uuid4()),
@@ -294,7 +273,6 @@ def test_get_order_success(mock_mongodb):
 
     assert response.status_code == 200
 
-    # Check that the returned order data matches the mock data
     response_data = response.json()
     assert response_data["id"] == str(order_id)
     assert response_data["customerId"]
@@ -307,7 +285,6 @@ def test_get_order_success(mock_mongodb):
     assert "createdAt" in response_data
     assert "updatedAt" in response_data
 
-    # Ensure find_one was called with the correct parameters
     mock_mongodb["orders"].find_one.assert_called_once_with(
         {"id": Binary.from_uuid(order_id)}, {"_id": 0}
     )
@@ -316,7 +293,6 @@ def test_get_order_success(mock_mongodb):
 def test_get_order_not_found(mock_mongodb):
     order_id = uuid4()
 
-    # Mock the return value of the find_one operation to simulate not found
     mock_mongodb["orders"].find_one = AsyncMock(return_value=None)
 
     response = client.get(f"/order/getByOrder/{order_id}")
@@ -324,7 +300,6 @@ def test_get_order_not_found(mock_mongodb):
     assert response.status_code == 404
     assert response.json() == {"detail": "Order not found"}
 
-    # Ensure find_one was called with the correct parameters
     mock_mongodb["orders"].find_one.assert_called_once_with(
         {"id": Binary.from_uuid(order_id)}, {"_id": 0}
     )
@@ -336,7 +311,6 @@ def test_get_order_not_found(mock_mongodb):
 def test_get_orders_by_customer_success(mock_mongodb):
     customer_id = uuid4()
 
-    # Mock the return value of the find operation
     mock_order_1 = {
         "id": str(uuid4()),
         "customerId": str(customer_id),
@@ -388,11 +362,9 @@ def test_get_orders_by_customer_success(mock_mongodb):
 
     assert response.status_code == 200
 
-    # Check that the returned order list matches the mock data
     response_data = response.json()
     assert len(response_data) == 2
     
-    # Verify that the specific fields match the mock data
     assert response_data[0]["quantity"] == mock_order_1["quantity"]
     assert response_data[0]["price"] == mock_order_1["price"]
     assert response_data[0]["status"] == mock_order_1["status"]
@@ -405,7 +377,6 @@ def test_get_orders_by_customer_success(mock_mongodb):
     assert response_data[1]["address"]["city"] == mock_order_2["address"]["city"]
     assert response_data[1]["product"]["name"] == mock_order_2["product"]["name"]
 
-    # Ensure find and to_list methods were called correctly
     mock_mongodb["orders"].find.assert_called_once_with({"customerId": Binary.from_uuid(customer_id)}, {"_id": 0})
     mock_find.to_list.assert_called_once_with(length=None)
 
@@ -413,18 +384,15 @@ def test_get_orders_by_customer_success(mock_mongodb):
 def test_get_orders_by_customer_not_found(mock_mongodb):
     customer_id = uuid4()
 
-    # Mock the return value of the find operation to return an empty list
     mock_mongodb["orders"].find.return_value.to_list = AsyncMock(return_value=[])
 
     response = client.get(f"/order/getByCustomer/{customer_id}")
 
     assert response.status_code == 200
 
-    # Check that the returned order list is empty
     response_data = response.json()
     assert response_data == []
 
-    # Ensure find and to_list methods were called correctly
     mock_mongodb["orders"].find.assert_called_once_with({"customerId": Binary.from_uuid(customer_id)}, {"_id": 0})
     mock_mongodb["orders"].find().to_list.assert_called_once_with(length=None)
 
@@ -436,7 +404,6 @@ def test_change_order_status_success(mock_mongodb):
     order_id = uuid4()
     new_status = "shipped"
 
-    # Mock the return value of the update_one operation to simulate a successful update
     mock_mongodb["orders"].update_one = AsyncMock(return_value=AsyncMock(matched_count=1))
 
     response = client.put(f"/order/changeStatus/{order_id}?status={new_status}")
@@ -444,7 +411,6 @@ def test_change_order_status_success(mock_mongodb):
     assert response.status_code == 200
     assert response.json() is True
 
-    # Ensure update_one was called with the correct parameters
     mock_mongodb["orders"].update_one.assert_called_once_with(
         {"id": Binary.from_uuid(order_id)}, {"$set": {"status": new_status}}, upsert=False
     )
@@ -454,7 +420,6 @@ def test_change_order_status_not_found(mock_mongodb):
     order_id = uuid4()
     new_status = "shipped"
 
-    # Mock the return value of the update_one operation to simulate a failure (no matching order found)
     mock_mongodb["orders"].update_one = AsyncMock(return_value=AsyncMock(matched_count=0))
 
     response = client.put(f"/order/changeStatus/{order_id}?status={new_status}")
@@ -462,7 +427,6 @@ def test_change_order_status_not_found(mock_mongodb):
     assert response.status_code == 200
     assert response.json() is False
 
-    # Ensure update_one was called with the correct parameters
     mock_mongodb["orders"].update_one.assert_called_once_with(
         {"id": Binary.from_uuid(order_id)}, {"$set": {"status": new_status}}, upsert=False
     )
