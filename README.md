@@ -129,3 +129,9 @@ The microservices repository for the TESODEV Order Application Project
 ## Docker Containerization
 >The project uses Docker to containerize the microservices, databases and some other services.
 ![Docker Contaieners shown in Portrainer](https://github.com/user-attachments/assets/250349f4-5026-49bd-b496-6c4a9ade624b)
+
+### 1. Container Management:
+
+* As seen in the image, each microservice (customer-service, order-service, gateway) runs in its own Docker container. Additionally, supporting services like MongoDB and RabbitMQ are also containerized.
+
+* The containers are managed using a container management tool named portrainer, which helps in maintaining and scaling the services.
