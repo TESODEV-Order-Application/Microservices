@@ -132,6 +132,6 @@ The microservices repository for the TESODEV Order Application Project
 
 ### 1. Container Management:
 
-* As seen in the image, each microservice (customer-service, order-service, gateway) runs in its own Docker container. Additionally, supporting services like MongoDB and RabbitMQ are also containerized.
+* As seen in the image, each microservice (```customer-service```, ```order-service```, ```gateway```) runs in its own Docker container. Additionally, supporting services like MongoDB and RabbitMQ are also containerized.
 
 * The containers are managed using a container management tool named portrainer, which helps in maintaining and scaling the services.
