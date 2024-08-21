@@ -21,8 +21,15 @@ def mock_mongodb():
 #customer
 ##################CREATE##################
 # Test the order creation route
-def test_create_order(mock_mongodb): 
+def test_create_order(mock_mongodb):
     order_id = uuid4()
+    
+    # Mock the find_one operation to simulate that the customer exists
+    mock_mongodb["customers"].find_one = AsyncMock(return_value={"address": "123 Main St"})
+    
+    # Mock the insert_one operation to simulate successful order creation
+    mock_mongodb["orders"].insert_one = AsyncMock()
+
     response = client.post("/order/", json={
         "customerId": str(order_id),
         "quantity": 1,
