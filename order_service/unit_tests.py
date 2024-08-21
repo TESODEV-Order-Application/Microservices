@@ -27,7 +27,7 @@ from unittest.mock import patch, AsyncMock
 def test_create_order(mock_publish, mock_mongodb):
     order_id = uuid4()
     
-    # Mock the return value of the find_one operation to simulate that the customer exists with a valid address
+    # Mock the return value of the find_one operation to simulate that the order exists with a valid address
     mock_mongodb["customers"].find_one = AsyncMock(return_value={
         "address": {
             "addressLine": "123 Main St",
@@ -105,7 +105,7 @@ def test_update_customer(mock_mongodb):
 
 
 ##################DELETE##################
-# Test the customer delete route
+# Test the order delete route
 def test_delete_order(mock_mongodb):
     order_id = uuid4()
 
@@ -198,22 +198,23 @@ def test_get_all_orders(mock_mongodb):
     mock_mongodb["orders"].find.assert_called_once_with({}, {"_id": 0})
     mock_find.to_list.assert_called_once_with(length=None)
 
-# Test the getAll customers route for a case where no customers are found
-def test_get_all_customers_empty(mock_mongodb):
-    # Mock the return value of the find operation to return an empty list
-    mock_mongodb["customers"].find.return_value.to_list = AsyncMock(return_value=[])
 
-    response = client.get("/customer/")
+# Test the getAll orders route for a case where no orders are found
+def test_get_all_orders_empty(mock_mongodb):
+    # Mock the return value of the find operation to return an empty list
+    mock_mongodb["orders"].find.return_value.to_list = AsyncMock(return_value=[])
+
+    response = client.get("/order/")
 
     assert response.status_code == 200
 
-    # Check that the returned customer list is empty
+    # Check that the returned order list is empty
     response_data = response.json()
     assert response_data == []
 
     # Ensure find and to_list methods were called correctly
-    mock_mongodb["customers"].find.assert_called_once_with({}, {"_id": 0})
-    mock_mongodb["customers"].find().to_list.assert_called_once_with(length=None)
+    mock_mongodb["orders"].find.assert_called_once_with({}, {"_id": 0})
+    mock_mongodb["orders"].find().to_list.assert_called_once_with(length=None)
 ##########################################
 
 """
