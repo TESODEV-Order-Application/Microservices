@@ -150,8 +150,6 @@ def test_update_order_customer_not_found(mock_mongodb):
     mock_mongodb["orders"].update_one.assert_not_called()
 ##########################################
 
-
-
 ##################DELETE##################
 # Test the order delete route
 def test_delete_order(mock_mongodb):

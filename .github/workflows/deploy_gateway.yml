@@ -50,6 +50,10 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            ORDER_SERVICE_URL=${{ secrets.ORDER_SERVICE_URL }}
+            CUSTOMER_SERVICE_URL=${{ secrets.CUSTOMER_SERVICE_URL }}
+            
 
       - name: Checkout code
         uses: actions/checkout@v2
