@@ -152,3 +152,10 @@ The microservices repository for the TESODEV Order Application Project
 * RabbitMQ is used for message brokering, particularly for sending order logs to the Audit Database.
 
 * MongoDB is used as the primary data storage solution, with separate instances for main data and audit logs.
+
+## API Documentation and Testing using Swagger
+>Each microservice in this project has an Swagger UI that provides easy documentation, exploration and testing for the API endpoints directly from their browsers.
+
+### 1. Customer Microservice
+>[Swagger URL](http://193.164.4.17:8001/docs)
+![customer swagger](https://github.com/user-attachments/assets/8352886c-fa1f-4107-98cc-d5c997bddfee)
