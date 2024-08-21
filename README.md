@@ -143,15 +143,12 @@ The microservices repository for the TESODEV Order Application Project
 * Acts as a single entry point for external requests. It routes the requests to the appropriate microservices (Customer Microservice, Order Microservice).
 
 ### 2. Customer Microservice:
-
 * Handles all operations related to customers. It interacts with the main MongoDB database to store and retrieve customer data.
 
 ### 3. Order Microservice:
-
-* Manages the order-related operations. It uses the CQRS pattern to handle commands and queries separately and logs order actions to the audit database using RabbitMQ for message brokering.
+* Manages the order-related operations. It interacts with the main MongoDB database to store and retrieve order data and logs order actions to the audit database using RabbitMQ for message brokering.
 
 ### 4. RabbitMQ and MongoDB:
-
 * RabbitMQ is used for message brokering, particularly for sending order logs to the Audit Database.
 
 * MongoDB is used as the primary data storage solution, with separate instances for main data and audit logs.
