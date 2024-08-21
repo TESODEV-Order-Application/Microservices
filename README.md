@@ -5,6 +5,90 @@ The microservices repository for the TESODEV Order Application Project
 > [Basic writing and formatting syntax](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
 
 
+# Project
+
+## CI/CD Pipeline
+> The CI/CD pipeline for this project is configured using GitHub Actions. The pipeline automates the testing, building, and deployment of the microservices whenever there is a code change.
+![I/CD pipeline](https://github.com/user-attachments/assets/b7e0888b-451d-48fb-9880-da0db625f19f)
+
+### 1. Unit Testing
+* Upon pushing code to the repository, the GitHub Action triggers the unit tests for each service.
+
+* The ```test_customer_service.yml``` and ```test_order_service.yml``` file contains the configuration for running these tests. It sets up the necessary environment, installs dependencies, and runs the test suite using Pytest. The unit tests can be found in each microservice's ```unit_tests.py``` file.
+
+* **ScreenShot of Unit Test Results**
+![Github Actions Unit Test Results](https://github.com/user-attachments/assets/9bc52958-f4ab-43da-becf-d357660204ba)
+
+### 2. Building Docker Images
+* After the tests pass, the pipeline moves on to build Docker images for the microservices. The images are then pushed to the GitHub Container Registry or any other specified container registry.
+
+* The ```deploy_customer_service.yml```, ```deploy_order_service.yml``` and ```deploy_gateway.yml``` files manages this part of the process. It includes steps for building the Docker images and deploying them.
+
+### 3. Deployment
+* The deployment is fully automated, the built Docker images are deployed to the server by sending a request to the [Deployment-Webhook](https://github.com/TESODEV-Order-Application/Deployment-Webhook) that listens on port 5000 to update any changed service.
+
+## Docker Containerization
+>The project uses Docker to containerize the microservices, databases and some other services.
+![Docker Contaieners shown in Portrainer](https://github.com/user-attachments/assets/250349f4-5026-49bd-b496-6c4a9ade624b)
+
+### 1. Container Management:
+* As seen in the image, each microservice (```customer-service```, ```order-service```, ```gateway```) runs in its own Docker container. Additionally, supporting services like MongoDB and RabbitMQ are also containerized.
+
+* The containers are managed using a container management tool named portrainer, which helps in maintaining and scaling the services.
+
+## System Schema
+> The system's overall architecture is illustrated in the system schema.png image.
+![System Schema](https://github.com/user-attachments/assets/cb5e9ee5-ef43-4f5d-a3fa-45015f094b06)
+
+### 1. API Gateway:
+* Acts as a single entry point for external requests. It routes the requests to the appropriate microservices (Customer Microservice, Order Microservice).
+
+### 2. Customer Microservice:
+* Handles all operations related to customers. It interacts with the main MongoDB database to store and retrieve customer data.
+
+### 3. Order Microservice:
+* Manages the order-related operations. It interacts with the main MongoDB database to store and retrieve order data and logs order actions to the audit database using RabbitMQ for message brokering.
+
+### 4. RabbitMQ and MongoDB:
+* RabbitMQ is used for message brokering, particularly for sending order logs to the Audit Database.
+
+* MongoDB is used as the primary data storage solution, with separate instances for main data and audit logs.
+
+## API Documentation and Testing using Swagger
+>Each microservice in this project has an Swagger UI that provides easy documentation, exploration and testing for the API endpoints directly from their browsers.
+
+### 1. Customer Microservice
+>Swagger URL: [http://193.164.4.17:8001/docs](http://193.164.4.17:8001/docs)
+![customer swagger](https://github.com/user-attachments/assets/8352886c-fa1f-4107-98cc-d5c997bddfee)
+
+* ```GET /customer/```: Retrieves a list of all customers.
+* ```POST /customer/```: Creates a new customer.
+* ```PUT /customer/{customerId}```: Updates the details of an existing customer based on the provided customer ID.
+* ```DELETE /customer/{customerId}```: Deletes an existing customer using the customer ID.
+* ```GET /customer/{customerId}```: Retrieves a specific customer by ID.
+* ```GET /customer/validate/{customerId}```: Validates if a customer exists based on the customer ID.
+
+### 2. Order Microservice
+>Swagger URL: [http://193.164.4.17:8002/docs](http://193.164.4.17:8002/docs)
+![order swagger](https://github.com/user-attachments/assets/dad4c27e-a084-41db-85b1-3b1b49dad634)
+
+* ```GET /order/```: Retrieves a list of all orders.
+* ```POST /order/```: Creates a new order.
+* ```PUT /order/{orderId}```: Updates an existing order based on the provided order ID.
+* ```DELETE /order/{orderId}```: Deletes an existing order using the order ID.
+* ```GET /order/getByCustomer/{customerId}```: Retrieves all orders placed by a specific customer using the customer ID.
+* ```GET /order/getByOrder/{orderId}```: Retrieves details of a specific order by order ID.
+* ```PUT /order/changeStatus/{orderId}```: Changes the status of an order.
+
+### 3. API Gateway
+>Swagger URL: [http://193.164.4.17:8080/docs](http://193.164.4.17:8080/docs)
+![gateway swagger](https://github.com/user-attachments/assets/006a6bcc-db83-4f8a-94ac-8dc984804a3a)
+
+* ```GET /{full_path}```: A generic endpoint that proxies GET requests to the appropriate microservice based on the provided full path.
+* ```POST /{full_path}```: Proxies POST requests to the appropriate microservice.
+* ```PUT /{full_path}```: Proxies PUT requests.
+* ```DELETE /{full_path}```: Proxies DELETE requests.
+
 # Setup
 
 ## 1.	Set Up a VPS:
@@ -101,89 +185,3 @@ The microservices repository for the TESODEV Order Application Project
    
    Admin->guest->Update this user-><PASSWORD>->Update User
    ```
-
-
-
-# Project
-
-## CI/CD Pipeline
-> The CI/CD pipeline for this project is configured using GitHub Actions. The pipeline automates the testing, building, and deployment of the microservices whenever there is a code change.
-![I/CD pipeline](https://github.com/user-attachments/assets/b7e0888b-451d-48fb-9880-da0db625f19f)
-
-### 1. Unit Testing
-* Upon pushing code to the repository, the GitHub Action triggers the unit tests for each service.
-
-* The ```test_customer_service.yml``` and ```test_order_service.yml``` file contains the configuration for running these tests. It sets up the necessary environment, installs dependencies, and runs the test suite using Pytest. The unit tests can be found in each microservice's ```unit_tests.py``` file.
-
-* **ScreenShot of Unit Test Results**
-![Github Actions Unit Test Results](https://github.com/user-attachments/assets/9bc52958-f4ab-43da-becf-d357660204ba)
-
-### 2. Building Docker Images
-* After the tests pass, the pipeline moves on to build Docker images for the microservices. The images are then pushed to the GitHub Container Registry or any other specified container registry.
-
-* The ```deploy_customer_service.yml```, ```deploy_order_service.yml``` and ```deploy_gateway.yml``` files manages this part of the process. It includes steps for building the Docker images and deploying them.
-
-### 3. Deployment
-* The deployment is fully automated, the built Docker images are deployed to the server by sending a request to the [Deployment-Webhook](https://github.com/TESODEV-Order-Application/Deployment-Webhook) that listens on port 5000 to update any changed service.
-
-## Docker Containerization
->The project uses Docker to containerize the microservices, databases and some other services.
-![Docker Contaieners shown in Portrainer](https://github.com/user-attachments/assets/250349f4-5026-49bd-b496-6c4a9ade624b)
-
-### 1. Container Management:
-* As seen in the image, each microservice (```customer-service```, ```order-service```, ```gateway```) runs in its own Docker container. Additionally, supporting services like MongoDB and RabbitMQ are also containerized.
-
-* The containers are managed using a container management tool named portrainer, which helps in maintaining and scaling the services.
-
-## System Schema
-> The system's overall architecture is illustrated in the system schema.png image.
-![System Schema](https://github.com/user-attachments/assets/cb5e9ee5-ef43-4f5d-a3fa-45015f094b06)
-
-### 1. API Gateway:
-* Acts as a single entry point for external requests. It routes the requests to the appropriate microservices (Customer Microservice, Order Microservice).
-
-### 2. Customer Microservice:
-* Handles all operations related to customers. It interacts with the main MongoDB database to store and retrieve customer data.
-
-### 3. Order Microservice:
-* Manages the order-related operations. It interacts with the main MongoDB database to store and retrieve order data and logs order actions to the audit database using RabbitMQ for message brokering.
-
-### 4. RabbitMQ and MongoDB:
-* RabbitMQ is used for message brokering, particularly for sending order logs to the Audit Database.
-
-* MongoDB is used as the primary data storage solution, with separate instances for main data and audit logs.
-
-## API Documentation and Testing using Swagger
->Each microservice in this project has an Swagger UI that provides easy documentation, exploration and testing for the API endpoints directly from their browsers.
-
-### 1. Customer Microservice
->Swagger URL: [http://193.164.4.17:8001/docs](http://193.164.4.17:8001/docs)
-![customer swagger](https://github.com/user-attachments/assets/8352886c-fa1f-4107-98cc-d5c997bddfee)
-
-* ```GET /customer/```: Retrieves a list of all customers.
-* ```POST /customer/```: Creates a new customer.
-* ```PUT /customer/{customerId}```: Updates the details of an existing customer based on the provided customer ID.
-* ```DELETE /customer/{customerId}```: Deletes an existing customer using the customer ID.
-* ```GET /customer/{customerId}```: Retrieves a specific customer by ID.
-* ```GET /customer/validate/{customerId}```: Validates if a customer exists based on the customer ID.
-
-### 2. Order Microservice
->Swagger URL: [http://193.164.4.17:8002/docs](http://193.164.4.17:8002/docs)
-![order swagger](https://github.com/user-attachments/assets/dad4c27e-a084-41db-85b1-3b1b49dad634)
-
-* ```GET /order/```: Retrieves a list of all orders.
-* ```POST /order/```: Creates a new order.
-* ```PUT /order/{orderId}```: Updates an existing order based on the provided order ID.
-* ```DELETE /order/{orderId}```: Deletes an existing order using the order ID.
-* ```GET /order/getByCustomer/{customerId}```: Retrieves all orders placed by a specific customer using the customer ID.
-* ```GET /order/getByOrder/{orderId}```: Retrieves details of a specific order by order ID.
-* ```PUT /order/changeStatus/{orderId}```: Changes the status of an order.
-
-### 3. API Gateway
->Swagger URL: [http://193.164.4.17:8080/docs](http://193.164.4.17:8080/docs)
-![gateway swagger](https://github.com/user-attachments/assets/006a6bcc-db83-4f8a-94ac-8dc984804a3a)
-
-* ```GET /{full_path}```: A generic endpoint that proxies GET requests to the appropriate microservice based on the provided full path.
-* ```POST /{full_path}```: Proxies POST requests to the appropriate microservice.
-* ```PUT /{full_path}```: Proxies PUT requests.
-* ```DELETE /{full_path}```: Proxies DELETE requests.
